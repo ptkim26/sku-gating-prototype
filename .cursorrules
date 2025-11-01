@@ -1,0 +1,366 @@
+# Pebble Playground Cursor Rules
+
+## Project Context
+This is a prototyping environment for Rippling's Pebble Design System. It's designed to be AI-friendly and enable rapid experimentation with Pebble components.
+
+## Component Import Patterns
+
+### Standard Components
+```typescript
+import Button from '@rippling/pebble/Button';
+import Modal from '@rippling/pebble/Modal';
+import Drawer from '@rippling/pebble/Drawer';
+import Dropdown from '@rippling/pebble/Dropdown';
+import Icon from '@rippling/pebble/Icon';
+import Typography from '@rippling/pebble/Typography';
+```
+
+### Input Components
+```typescript
+import Select from '@rippling/pebble/Inputs/Select';
+import Input from '@rippling/pebble/Inputs';
+// Then use: Input.Text, Input.Checkbox, Input.Switch, etc.
+```
+
+### Layout Components
+```typescript
+import Box from '@rippling/pebble/Layout/Box';
+import Grid from '@rippling/pebble/Layout/Grid';
+```
+
+### Theme
+```typescript
+import { useTheme } from '@rippling/pebble/theme';
+const { theme } = useTheme();
+```
+
+## Theme Token Usage
+
+### ALWAYS use theme tokens for:
+- **Colors**: `theme.colorSurface`, `theme.colorPrimary`, `theme.colorOnSurface`
+- **Typography**: `theme.typestyleBodyMedium400`, `theme.typestyleHeadingLarge700`
+- **Spacing**: `theme.space200`, `theme.space400`
+- **Border Radius**: `theme.shapeCornerM`, `theme.shapeCornerS`
+
+### NEVER hardcode:
+- ❌ `backgroundColor: 'white'` → ✅ `backgroundColor: theme.colorSurface`
+- ❌ `color: '#000000'` → ✅ `color: theme.colorOnSurface`
+- ❌ `padding: '16px'` → ✅ `padding: theme.space400`
+- ❌ `fontSize: '14px'` → ✅ Use Typography component or theme.typestyleBodyMedium400
+
+## Animation Patterns
+
+Import animation constants from local utils:
+```typescript
+import { DURATION, EASING, SCALE } from '../utils/animation-constants';
+```
+
+### Timing
+- **DURATION.fast** (150ms) - Fast interactions (tooltips, dropdowns, button press)
+- **DURATION.standard** (250ms) - Standard UI animations (drawers, modals)
+- **DURATION.long** (350ms) - Complex page transitions
+
+### Easing
+- **EASING.easeOut** - For entrance animations (starts fast, ends slow)
+- **EASING.easeIn** - For exit animations (starts slow, ends fast)  
+- **EASING.easeInOut** - For elements that transform in place
+
+### Scale
+- **SCALE.buttonActive** (0.97) - Button press feedback
+- **SCALE.initial** (0.93) - Starting scale for fade+scale entrances
+- **SCALE.full** (1.0) - Final scale (100%)
+
+### Pattern: Entrance Animation
+```typescript
+import { keyframes } from '@emotion/react';
+
+const fadeScaleIn = keyframes`
+  from {
+    opacity: 0;
+    transform: scale(${SCALE.initial});
+  }
+  to {
+    opacity: 1;
+    transform: scale(${SCALE.full});
+  }
+`;
+
+const AnimatedDiv = styled.div`
+  animation: ${fadeScaleIn} ${DURATION.fast} ${EASING.easeOut};
+`;
+```
+
+### Pattern: Exit Animation
+```typescript
+const fadeScaleOut = keyframes`
+  from {
+    opacity: 1;
+    transform: scale(${SCALE.full});
+  }
+  to {
+    opacity: 0;
+    transform: scale(${SCALE.initial});
+  }
+`;
+
+const AnimatedDiv = styled.div`
+  &.closing {
+    animation: ${fadeScaleOut} ${DURATION.fast} ${EASING.easeIn};
+  }
+`;
+```
+
+## File Structure
+
+### New Demos
+- Place in `src/demos/`
+- Name pattern: `kebab-case-demo.tsx`
+- Export default component
+- Include inline documentation
+
+### Reusable Components
+- Place in `src/components/`
+- Make generic and reusable
+- Document props with JSDoc
+
+### Utilities
+- Place in `src/utils/`
+- Keep pure functions
+- Export named functions
+
+### Forked Components
+- Place in `src/demos/[DemoName]/Forked[ComponentName]/`
+- Document why forked and what changed
+- Fix all import paths to use `@rippling/pebble`
+
+## Component Usage Patterns
+
+### Button
+```typescript
+<Button 
+  size={Button.SIZES.M}                      // XS | S | M | L
+  appearance={Button.APPEARANCES.PRIMARY}    // PRIMARY | ACCENT | DESTRUCTIVE | SUCCESS | OUTLINE | GHOST
+  onClick={() => {}}
+>
+  Label
+</Button>
+```
+
+### Modal
+```typescript
+const [isOpen, setIsOpen] = useState(false);
+
+<Modal 
+  isVisible={isOpen}                // Required: controls visibility
+  onCancel={() => setIsOpen(false)} // Required: close handler
+  title="Title"                     // Required: modal title
+>
+  <div style={{ padding: '1rem' }}>Content</div>
+  <ModalFooter>
+    <ModalCloseButton>Cancel</ModalCloseButton>
+    <Button appearance={Button.APPEARANCES.PRIMARY}>Confirm</Button>
+  </ModalFooter>
+</Modal>
+```
+
+### Drawer
+```typescript
+<Drawer
+  isVisible={isOpen}                 // Required
+  onCancel={() => setIsOpen(false)}  // Required
+  title="Title"                      // Required
+  isCompact={false}                  // Optional: false = 600px, true = 400px
+>
+  Content
+  <Drawer.Footer>
+    <Drawer.CloseButton>Cancel</Drawer.CloseButton>
+  </Drawer.Footer>
+</Drawer>
+```
+
+### Select
+```typescript
+<Select
+  id="unique-id"          // Required
+  isRequired={false}      // Required
+  placeholder="..."       // Optional
+  list={[                 // Required: array of { label, value }
+    { label: 'Option 1', value: 'opt1' }
+  ]}
+  value={selectedValue}   // Controlled value
+  onChange={(value) => setSelectedValue(value as string)}
+/>
+```
+
+### Dropdown
+```typescript
+<Dropdown
+  list={[ { label: 'Edit', value: 'edit' } ]}
+  onChange={(value) => handleChange(value)}
+  shouldAutoClose         // Closes after selection
+>
+  <Button>Trigger</Button>
+</Dropdown>
+```
+
+## Common Gotchas
+
+### Enum Values
+❌ **Wrong**: `<Button size="M" appearance="PRIMARY">`  
+✅ **Correct**: `<Button size={Button.SIZES.M} appearance={Button.APPEARANCES.PRIMARY}>`
+
+### Modal/Drawer Visibility
+❌ **Wrong**: `<Modal isOpen={true}>`  
+✅ **Correct**: `<Modal isVisible={true}>`
+
+### Theme Access
+❌ **Wrong**: Using theme outside component or without hook  
+✅ **Correct**: `const { theme } = useTheme()` inside component
+
+### Hardcoded Colors
+❌ **Wrong**: `backgroundColor: 'white'`  
+✅ **Correct**: `backgroundColor: theme.colorSurface`
+
+### Icon-Only Buttons
+❌ **Wrong**: `<Button.Icon icon={Icon.TYPES.SETTINGS_OUTLINE} />`  
+✅ **Correct**: `<Button.Icon icon={Icon.TYPES.SETTINGS_OUTLINE} aria-label="Settings" />`
+
+## TypeScript Guidelines
+
+### Use explicit types
+```typescript
+// Good
+const [value, setValue] = useState<string | undefined>(undefined);
+const handleChange = (newValue: string) => setValue(newValue);
+
+// Avoid
+const [value, setValue] = useState(undefined);
+const handleChange = (newValue) => setValue(newValue);
+```
+
+### Component Props
+```typescript
+interface MyDemoProps {
+  title: string;
+  onClose?: () => void;
+}
+
+const MyDemo: React.FC<MyDemoProps> = ({ title, onClose }) => {
+  // ...
+};
+```
+
+## Styling Approach
+
+### Prefer emotion/styled
+```typescript
+import styled from '@emotion/styled';
+
+const Container = styled.div`
+  background-color: ${({ theme }) => theme.colorSurface};
+  padding: ${({ theme }) => theme.space400};
+  border-radius: ${({ theme }) => theme.shapeCornerM};
+`;
+```
+
+### Inline styles for simple cases
+```typescript
+<div style={{
+  backgroundColor: theme.colorSurface,
+  padding: theme.space400,
+}}>
+```
+
+## Accessibility
+
+### Always include:
+- `aria-label` for icon-only interactive elements
+- `id` for form inputs
+- Semantic HTML (`<button>`, `<nav>`, `<main>`, etc.)
+- Proper heading hierarchy (`h1` → `h2` → `h3`)
+
+### Examples:
+```typescript
+// Icon button
+<Button.Icon 
+  icon={Icon.TYPES.SETTINGS_OUTLINE}
+  aria-label="Open settings"
+/>
+
+// Form input
+<Input.Text
+  id="email-input"
+  label="Email"
+  aria-required="true"
+/>
+```
+
+## Documentation
+
+### Inline Comments
+- Explain *why*, not *what*
+- Document non-obvious behavior
+- Include examples for complex logic
+
+### Component Documentation
+```typescript
+/**
+ * AnimationsDemo showcases entrance/exit animations for Pebble components.
+ * 
+ * Features:
+ * - Before/after comparisons
+ * - Interactive controls for size/appearance
+ * - Rotating caret in ForkedSelect
+ * 
+ * @example
+ * <AnimationsDemo />
+ */
+const AnimationsDemo = () => {
+  // ...
+};
+```
+
+## Performance
+
+### Memoization
+Use for expensive computations:
+```typescript
+const filteredList = useMemo(() => 
+  list.filter(item => item.value.includes(searchQuery)),
+  [list, searchQuery]
+);
+```
+
+### Callbacks
+Wrap event handlers:
+```typescript
+const handleClick = useCallback(() => {
+  doSomething();
+}, [dependencies]);
+```
+
+## Git Commit Messages
+
+Follow conventional commits:
+- `feat: add drawer animation demo`
+- `fix: correct theme token in modal demo`
+- `docs: update AI prompting guide`
+- `refactor: extract animation constants`
+- `chore: update dependencies`
+
+## When in Doubt
+
+1. Check `src/demos/` for similar examples
+2. Reference `docs/AI_PROMPTING_GUIDE.md`
+3. Look at Pebble Storybook: https://pebble.rippling.dev
+4. Ask specific questions about patterns
+
+## Key Principles
+
+1. **Theme Tokens First** - Always use theme, never hardcode
+2. **Self-Documenting** - Code should explain itself
+3. **Type Safe** - Use TypeScript properly
+4. **Consistent Patterns** - Follow established patterns in existing demos
+5. **Accessibility** - ARIA labels, semantic HTML, keyboard navigation
+6. **Performance** - Memoize when needed, avoid unnecessary re-renders
+

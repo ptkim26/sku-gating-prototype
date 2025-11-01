@@ -1,0 +1,451 @@
+import type { inline as Inline } from '@css-inline/css-inline-wasm';
+import { initI18nTranslations } from '@rippling/lib-i18n';
+import Button from '@rippling/pebble/Button';
+import Drawer from '@rippling/pebble/Drawer';
+import Dropdown from '@rippling/pebble/Dropdown';
+import ListItem from '@rippling/pebble/ListItem';
+import oneUiService, { getCurrentTheme } from '@rippling/pebble/services';
+import SnackBar from '@rippling/pebble/SnackBar';
+import {
+  ThemeProvider,
+  darkThemeConfig,
+  lightThemeConfig,
+  darkThemeBerryConfig,
+  lightThemeBerryConfig,
+  useTheme,
+  useThemeSettings,
+} from '@rippling/pebble/theme';
+import resources from '@rippling/pebble/translations/locales/en-US/one-ui.json';
+import { debounce } from 'lodash';
+import React, { StrictMode } from 'react';
+import * as ReactDOM from 'react-dom/client';
+import ReactJson from 'react-json-view';
+import ReactShadow from 'react-shadow';
+import {
+  DocumentEditor,
+  InlineEditor,
+  RichTextEditor,
+} from '@rippling/pebble-editor';
+import GlobalStyle from '@rippling/pebble/GlobalStyle';
+import { SAMPLE_VARIABLES } from './__mock__/mockVariables';
+import Icon from '@rippling/pebble/Icon';
+import ModalDemo from './demos/modal-demo';
+import AnimationsDemo from './demos/animations-demo';
+
+async function getCSSInliner(): Promise<typeof Inline> {
+  const [{ initWasm, inline }, { default: wasmUrl }] = await Promise.all([
+    import('@css-inline/css-inline-wasm'),
+    import(
+      // @ts-expect-error using url-loader in import syntax because we need to load the wasm file as url
+      '@css-inline/css-inline-wasm/index_bg.wasm?url'
+    ),
+  ]);
+  return initWasm(fetch(wasmUrl)).then(
+    () => (html, options) => inline(html, { ...options, loadRemoteStylesheets: false }), // loadRemoteStylesheets is not supported with WASM version
+  );
+}
+
+// Initialize @rippling/ui package
+oneUiService.init({} as any);
+
+const defaultNameSpace = 'one-ui';
+const namespaces = [defaultNameSpace];
+const language = 'en-US';
+const supportedLanguages = [language];
+
+// Initialize translation (dependency of @rippling/pebble)
+function init() {
+  return initI18nTranslations({
+    resources: {
+      [language]: {
+        [defaultNameSpace]: resources,
+      },
+    },
+    namespaces,
+    supportedLanguages,
+    defaultNameSpace,
+    fallbackLanguage: language,
+    language,
+    debug: true,
+  });
+}
+
+const container = document.getElementById('root') as HTMLElement;
+
+let root = (window as any).__root__;
+
+if (!root) {
+  root = ReactDOM.createRoot(container);
+  (window as any).__root__ = root;
+}
+
+const storeStates = (params: Record<string, unknown>) =>
+  window.localStorage.setItem('pebble-editor-playground', JSON.stringify(params));
+const getStoredStates = () =>
+  JSON.parse(window.localStorage.getItem('pebble-editor-playground') || '{}');
+
+enum EditorType {
+  RICH_TEXT = 'rich-text',
+  DOCUMENT = 'document',
+  INLINE = 'inline',
+  MODAL_DEMO = 'modal-demo',
+  ANIMATIONS = 'animations',
+}
+
+const Playground = (props: { inlineCSS: typeof Inline; className?: string }) => {
+  const { inlineCSS, className } = props;
+  const storedData = React.useMemo(() => {
+    try {
+      return getStoredStates();
+    } catch (error) {
+      console.error(error);
+      return {};
+    }
+  }, []);
+
+  const { changeTheme } = useThemeSettings();
+  const { name: currentThemeName, theme } = useTheme();
+  const [editorType, setEditorType] = React.useState(storedData.editorType ?? EditorType.RICH_TEXT);
+  const [isEditable, setIsEditable] = React.useState(storedData.isEditable ?? true);
+  const [isDisabled, setIsDisabled] = React.useState(storedData.isDisabled ?? false);
+  const [showPreview, setShowPreview] = React.useState(storedData.showPreview ?? false);
+  const [logTypingPerf, setLogTypingPerf] = React.useState(storedData.logTypingPerf ?? false);
+  const [showEditorBasedPreview, setShowEditorBasedPreview] = React.useState(
+    storedData.showEditorBasedPreview ?? false,
+  );
+  const [showJSON, setShowJSON] = React.useState(storedData.showJSON ?? false);
+  const [html, setHtml] = React.useState(``);
+  const [json, setJson] = React.useState({});
+  const [isDemoSwitcherOpen, setIsDemoSwitcherOpen] = React.useState(false);
+  const [isTopBarVisible, setIsTopBarVisible] = React.useState(true);
+
+  React.useEffect(() => {
+    storeStates({
+      editorType,
+      isEditable,
+      isDisabled,
+      showPreview,
+      logTypingPerf,
+      showEditorBasedPreview,
+      showJSON,
+    });
+  }, [
+    editorType,
+    isEditable,
+    isDisabled,
+    showPreview,
+    logTypingPerf,
+    showEditorBasedPreview,
+    showJSON,
+  ]);
+
+  // Keyboard shortcut to toggle top bar visibility
+  React.useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Cmd+K on Mac, Ctrl+K on Windows/Linux
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault();
+        setIsTopBarVisible(prev => !prev);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
+  const reportError = React.useCallback((error: Error) => {
+    console.error(error);
+    SnackBar.error(error.message);
+  }, []);
+
+  const handleChange = React.useMemo(
+    () =>
+      !logTypingPerf && (showPreview || showJSON || showEditorBasedPreview)
+        ? debounce(async ({ html, json }) => {
+            setHtml(await html());
+            setJson(json());
+          }, 250)
+        : undefined,
+    [logTypingPerf, showPreview, showJSON, showEditorBasedPreview],
+  );
+
+  console.log(html);
+
+  const DEMO_OPTIONS = [
+    { type: EditorType.RICH_TEXT, label: 'Rich Text Editor' },
+    { type: EditorType.DOCUMENT, label: 'Document Editor' },
+    { type: EditorType.INLINE, label: 'Inline Editor' },
+    { type: EditorType.MODAL_DEMO, label: 'Drawer Demo' },
+    { type: EditorType.ANIMATIONS, label: 'Animations' },
+  ];
+
+  const SETTINGS_OPTIONS = [
+    {
+      label: isEditable ? 'Make Read-Only' : 'Make Editable',
+      onClick: () => setIsEditable(!isEditable),
+    },
+    {
+      label: isDisabled ? 'Enable Editor' : 'Disable Editor',
+      onClick: () => setIsDisabled(!isDisabled),
+    },
+    {
+      label: showEditorBasedPreview ? 'Hide Editor Preview' : 'Show Editor Preview',
+      onClick: () => setShowEditorBasedPreview(!showEditorBasedPreview),
+    },
+    {
+      label: showPreview ? 'Hide HTML Preview' : 'Show HTML Preview',
+      onClick: () => setShowPreview(!showPreview),
+    },
+    {
+      label: showJSON ? 'Hide JSON Preview' : 'Show JSON Preview',
+      onClick: () => setShowJSON(!showJSON),
+    },
+    {
+      label: logTypingPerf ? 'Disable Performance Logging' : 'Enable Performance Logging',
+      onClick: () => setLogTypingPerf(!logTypingPerf),
+    },
+  ];
+
+  const settingsDropdown = (
+    <Dropdown
+      key="Settings"
+      list={SETTINGS_OPTIONS.map((option, index) => ({
+        label: option.label,
+        value: index,
+      }))}
+      onChange={value => {
+        SETTINGS_OPTIONS[value].onClick();
+      }}
+      shouldAutoClose
+    >
+      <Button.Icon
+        aria-label="settings"
+        icon={Icon.TYPES.SETTINGS_OUTLINE}
+        size={Button.SIZES.S}
+        appearance={Button.APPEARANCES.OUTLINE}
+      />
+    </Dropdown>
+  );
+
+  const toggleTheme = (
+    <Button.Icon
+      key="Theme"
+      aria-label="toggle-theme"
+      icon={
+        currentThemeName === 'berry-dark' ? Icon.TYPES.SUN_OUTLINE : Icon.TYPES.OVERNIGHT_OUTLINE
+      }
+      size={Button.SIZES.S}
+      appearance={Button.APPEARANCES.OUTLINE}
+      onClick={() => changeTheme(currentThemeName === 'berry-dark' ? 'berry-light' : 'berry-dark')}
+    />
+  );
+
+  const toggleEditor = (
+    <Button key="Editor" size={Button.SIZES.S} onClick={() => setIsDemoSwitcherOpen(true)}>
+      Switch Demo
+    </Button>
+  );
+
+  const demoSwitcherDrawer = (
+    <Drawer
+      isVisible={isDemoSwitcherOpen}
+      onCancel={() => setIsDemoSwitcherOpen(false)}
+      title="Switch Demo"
+      isCompact
+      width={320}
+    >
+      <div style={{ padding: '0' }}>
+        {DEMO_OPTIONS.map(demo => (
+          <ListItem
+            key={demo.type}
+            title={demo.label}
+            rightRenderer={
+              demo.type === editorType ? (
+                <Icon type={Icon.TYPES.CHECK} color={theme.colorPrimary} size={20} />
+              ) : null
+            }
+            onClick={() => {
+              setEditorType(demo.type);
+              setIsDemoSwitcherOpen(false);
+            }}
+          />
+        ))}
+      </div>
+    </Drawer>
+  );
+
+  const getCurrentDemoName = () => {
+    const demo = DEMO_OPTIONS.find(d => d.type === editorType);
+    return demo?.label || 'Pebble Playground';
+  };
+
+  const buttons = (
+    <div
+      style={{
+        display: 'flex',
+        gap: '10px',
+        padding: '16px 20px',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+      }}
+    >
+      <h1
+        style={{
+          margin: 0,
+          fontSize: '18px',
+          fontWeight: 600,
+          color: theme.colorOnSurface,
+        }}
+      >
+        {getCurrentDemoName()}
+      </h1>
+      <div style={{ display: 'flex', gap: '10px' }}>
+        {settingsDropdown}
+        {toggleTheme}
+        {toggleEditor}
+      </div>
+    </div>
+  );
+
+  return (
+    <div
+      role="main"
+      style={{
+        backgroundColor: theme.colorSurface,
+        minHeight: '100vh',
+      }}
+      className={className}
+    >
+      {demoSwitcherDrawer}
+      {editorType === EditorType.RICH_TEXT && (
+        <>
+          {isTopBarVisible && buttons}
+          <div style={{ maxWidth: '900px', margin: '20px auto 0' }}>
+            <RichTextEditor
+              editable={isEditable}
+              disabled={isDisabled}
+              onError={reportError}
+              features={{ fileUpload: true, variables: true }}
+              typingPerfLogger={logTypingPerf ? console.log : undefined}
+              onChange={handleChange}
+              variables={SAMPLE_VARIABLES}
+              placeholder="Enter your subject"
+              initialContent={html}
+              DO_NOT_USE_enableBlockExperience
+            />
+          </div>
+        </>
+      )}
+
+      {editorType === EditorType.DOCUMENT && (
+        <DocumentEditor
+          disabled={isDisabled}
+          onError={reportError}
+          features={{ fileUpload: true, variables: true, page: true, advanceListPatterns: true }}
+          typingPerfLogger={logTypingPerf ? console.log : undefined}
+          onChange={handleChange}
+          containerStyle={{ height: '100vh' }}
+          header={isTopBarVisible ? buttons : undefined}
+          variables={SAMPLE_VARIABLES}
+          inlineCSS={inlineCSS}
+          initialContent={html}
+          placeholder="Enter your subject"
+        />
+      )}
+      {editorType === EditorType.INLINE && (
+        <>
+          {isTopBarVisible && buttons}
+          <div style={{ maxWidth: '900px', margin: '20px auto 0' }}>
+            <InlineEditor
+              placeholder="Enter your subject"
+              editable={isEditable}
+              disabled={isDisabled}
+              onError={reportError}
+              variables={SAMPLE_VARIABLES}
+              multiLine={false}
+              initialContent={html}
+              features={{ variables: true }}
+            />
+          </div>
+        </>
+      )}
+
+      {editorType === EditorType.MODAL_DEMO && (
+        <>
+          {isTopBarVisible && buttons}
+          <ModalDemo />
+        </>
+      )}
+
+      {editorType === EditorType.ANIMATIONS && (
+        <>
+          {isTopBarVisible && buttons}
+          <AnimationsDemo />
+        </>
+      )}
+
+      <div style={{ maxWidth: '900px', margin: '32px auto 0' }}>
+        {!logTypingPerf && showEditorBasedPreview && (
+          <>
+            <p style={{ textDecoration: 'underline' }}>Editor Preview</p>
+            <hr />
+            {editorType === EditorType.RICH_TEXT && (
+              <RichTextEditor
+                onError={console.log}
+                key={html}
+                initialContent={html}
+                features={{ fileUpload: true, variables: true }}
+                variables={SAMPLE_VARIABLES}
+              />
+            )}
+            {editorType === EditorType.DOCUMENT && (
+              <DocumentEditor
+                onError={console.log}
+                key={html}
+                initialContent={html}
+                features={{ fileUpload: true, variables: true, page: true }}
+                variables={SAMPLE_VARIABLES}
+                containerStyle={{ height: 'auto' }}
+                disabled
+                toolbar={false}
+              />
+            )}
+          </>
+        )}
+        {!logTypingPerf && showPreview && (
+          <>
+            <p style={{ textDecoration: 'underline' }}>HTML Preview</p>
+            <hr />
+            <ReactShadow.div>
+              <div dangerouslySetInnerHTML={{ __html: html }} />
+            </ReactShadow.div>
+          </>
+        )}
+        {!logTypingPerf && showJSON && (
+          <>
+            <p style={{ textDecoration: 'underline' }}>JSON Preview</p>
+            <hr />
+            <ReactJson src={json} />
+          </>
+        )}
+      </div>
+    </div>
+  );
+};
+
+const THEME_PROVIDER_PROPS = {
+  themeConfigs: [lightThemeBerryConfig, darkThemeBerryConfig],
+};
+
+init()
+  .then(getCSSInliner)
+  .then(inlineCSS => {
+    root.render(
+      <StrictMode>
+        <ThemeProvider {...THEME_PROVIDER_PROPS} defaultTheme="berry-light">
+          <GlobalStyle />
+          <Playground inlineCSS={inlineCSS} />
+        </ThemeProvider>
+      </StrictMode>,
+    );
+  });
