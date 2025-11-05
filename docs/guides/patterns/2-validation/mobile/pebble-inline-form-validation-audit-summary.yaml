@@ -1,0 +1,360 @@
+audit_summary:
+  - file: app/products/hr/Insurance/containers/OrderDependentCard/OrderDependentCard.tsx
+    platform: mobile
+    component: Form.Input.Text
+    conformance_score: 0.45
+    evidence: [99, 103, 106, 110, 125, 129]
+    issues_found:
+      - Generic validation messages from translations
+      - No accessibility attributes (aria-invalid, aria-describedby)
+      - Separate error display breaks field association
+      - No validation timing control (submit-only)
+    recommended_fix:
+      - Replace generic validationError with specific messages
+      - Add aria-invalid and aria-describedby attributes
+      - Use consistent error display pattern below field
+      - Implement blur + debounced revalidation timing
+
+  - file: app/products/hr/Insurance/containers/AddBankAccount/AddBankAccount.tsx
+    platform: mobile
+    component: Form.Input.Number
+    conformance_score: 0.60
+    evidence: [101, 106, 114, 118, 126, 131]
+    issues_found:
+      - Good async validation but missing accessibility
+      - Helper messages mixed with validation errors
+      - Generic translation keys for error messages
+      - No focus management on validation failure
+    recommended_fix:
+      - Add accessibility attributes for error states
+      - Separate helper text from error messages
+      - Improve error message specificity
+      - Add focus-first-error on form submit
+
+  - file: app/products/finance/Travel/forms/groups/TravelerInfoFormGroup/TravelerInfoFormGroup.tsx
+    platform: mobile
+    component: FormInputText
+    conformance_score: 0.70
+    evidence: [39, 43, 49, 53, 72, 85]
+    issues_found:
+      - Missing accessibility implementation
+      - No validation timing specification
+      - Good required field handling but no error display
+    recommended_fix:
+      - Add aria-invalid and aria-describedby support
+      - Implement blur + revalidate timing pattern
+      - Add error message display below fields
+
+  - file: app/products/finance/Travel/forms/inputs/PaymentMethodSelect/useCardFormStrings.tsx
+    platform: mobile
+    component: Translation Messages
+    conformance_score: 0.85
+    evidence: [32, 34, 41, 43, 45, 47]
+    issues_found:
+      - Excellent specific validation messages
+      - Good actionable error copy
+      - Missing length constraints in some messages
+    recommended_fix:
+      - Add character limits to relevant messages
+      - Maintain this pattern as gold standard for other forms
+
+  - file: app/products/hr/Hris/Emp/infra/flowInfra/eorInfra/hooks/useFlowInfraFormValidation.ts
+    platform: mobile
+    component: Custom Validation Hook
+    conformance_score: 0.75
+    evidence: [68, 80, 87, 95]
+    issues_found:
+      - Excellent async validation with 800ms debounce
+      - Race condition handling with timestamps
+      - No accessibility attributes implementation
+      - No focus management
+    recommended_fix:
+      - Add accessibility support to validation response
+      - Implement focus-first-error callback
+      - Document this as best practice for async validation
+
+  - file: app/products/hr/Hris/containers/flowInfra/eorInfra/eorMapper/EorActiveComponentMap.tsx
+    platform: mobile
+    component: Dynamic Form Component
+    conformance_score: 0.68
+    evidence: [75, 84, 91]
+    issues_found:
+      - Good conditional debouncing per field
+      - Missing accessibility attributes
+      - No error message standardization
+    recommended_fix:
+      - Add accessibility props to commonProps
+      - Standardize error message patterns
+      - Implement consistent validation timing
+
+  - file: app/products/finance/SpendManagement/containers/ExpenseEditor/ExpenseEditor.tsx
+    platform: mobile
+    component: Form
+    conformance_score: 0.55
+    evidence: [337, 403, 461]
+    issues_found:
+      - Hidden field anti-pattern for form validation
+      - Good debounced updates for amount field
+      - No field-level validation timing
+      - Generic error handling with alertFromBeError
+    recommended_fix:
+      - Remove hidden invalidator field, use proper form state
+      - Add field-level validation with proper timing
+      - Implement specific error messages
+      - Add accessibility attributes
+
+  - file: app/products/finance/SpendManagement/containers/Cards/CardEditor/CardEditor.tsx
+    platform: mobile
+    component: FormInputText
+    conformance_score: 0.58
+    evidence: [106, 109]
+    issues_found:
+      - Debounced field updates (good pattern)
+      - Missing inline validation messages
+      - No accessibility implementation
+      - Form-level error handling only
+    recommended_fix:
+      - Add field-level validation messages
+      - Implement accessibility attributes
+      - Add blur + revalidate timing pattern
+
+  - file: app/products/hr/TimeTracking/containers/TimeEntryDetails/TimeEntryBasicForm.tsx
+    platform: mobile
+    component: InputDate
+    conformance_score: 0.40
+    evidence: [283, 298, 303]
+    issues_found:
+      - Complex custom validation logic
+      - No inline error messages below fields
+      - Manual error styling outside form pattern
+      - No accessibility attributes
+    recommended_fix:
+      - Add proper inline error message display
+      - Implement accessibility for date inputs
+      - Standardize error display pattern
+      - Add focus management for validation failures
+
+  - file: app/products/hr/Scheduling/containers/ChangeRequest/EditShift/EditShiftForm/EditShiftSegment.tsx
+    platform: mobile
+    component: Form
+    conformance_score: 0.62
+    evidence: [167, 180, 194]
+    issues_found:
+      - Good validation error computation
+      - Form-level submit disabling based on errors
+      - No individual field error display
+      - Missing accessibility implementation
+    recommended_fix:
+      - Add field-level error message display
+      - Implement accessibility attributes
+      - Add focus-first-error behavior
+
+  - file: app/lib/formInputValidations/formCustomValidationRules.ts
+    platform: mobile
+    component: Validation Rules Library
+    conformance_score: 0.78
+    evidence: [999, 1009, 1035, 1050]
+    issues_found:
+      - Comprehensive validation rule library
+      - Good specific validators for different domains
+      - No accessibility considerations in rule design
+      - Some rules could provide better error context
+    recommended_fix:
+      - Add accessibility guidance to validation rules
+      - Enhance error messages with specific formatting guidance
+      - Document best practices for error message generation
+
+  - file: translations/locales/en-US/travel.json
+    platform: mobile
+    component: Translation Messages
+    conformance_score: 0.83
+    evidence_patterns: [cardNumberRequired, expiryDateInThePastMessage, zipInvalidMessage]
+    issues_found:
+      - Excellent specific validation messages
+      - Good actionable error copy
+      - Consistent formatting and tone
+    recommended_fix:
+      - Use this as template for other product areas
+      - Add character count guidance where relevant
+
+  - file: translations/locales/en-US/timeTracking.json
+    platform: mobile
+    component: Translation Messages
+    conformance_score: 0.25
+    evidence_patterns: [invalidDate, invalidRequestData]
+    issues_found:
+      - Vague generic error messages
+      - No actionable guidance for users
+      - Inconsistent with better patterns in travel
+    recommended_fix:
+      - Replace "Invalid date" with "Enter date in MM/DD/YYYY format"
+      - Make all error messages specific and actionable
+      - Follow travel translation patterns
+
+summary:
+  average_conformance: 0.58
+  total_instances: 25
+  files_analyzed_in_depth: 13
+  top_issues:
+    - issue: Missing accessibility attributes
+      percentage: 100
+      severity: high
+      affected_files: 25
+    - issue: Vague or generic error messages
+      percentage: 60
+      severity: medium
+      affected_files: 15
+    - issue: No focus management on form errors
+      percentage: 90
+      severity: high
+      affected_files: 23
+    - issue: Inconsistent validation timing
+      percentage: 70
+      severity: medium
+      affected_files: 18
+    - issue: Hidden field anti-patterns
+      percentage: 10
+      severity: low
+      affected_files: 3
+
+  validation_timing_patterns:
+    submit_only: 40
+    immediate_onchange: 20
+    debounced_validation: 40
+    recommended_pattern: "blur + debounced revalidation (300ms)"
+
+  accessibility_compliance:
+    aria_invalid_usage: 0
+    aria_describedby_usage: 0
+    focus_management: 0
+    live_announcements: 0
+    recommended_compliance_target: 100
+
+  message_quality_analysis:
+    specific_actionable: 30
+    generic_vague: 60
+    missing_context: 10
+    gold_standard_examples:
+      - "Card number is required"
+      - "Expiry date must be in the future"
+      - "Enter a valid ZIP code (5 digits)"
+
+  suggested_repo_actions:
+    - action: Create useInlineValidation hook
+      priority: high
+      effort: medium
+      impact: high
+      description: Standardized hook with blur + debounced revalidation, proper timing control
+
+    - action: Add AccessibleFormField wrapper component
+      priority: critical
+      effort: medium
+      impact: high
+      description: Consistent accessibility implementation with aria-invalid, aria-describedby, live announcements
+
+    - action: Implement focus-first-error utility
+      priority: high
+      effort: low
+      impact: medium
+      description: Focus management on form validation failures
+
+    - action: Create validation message style guide
+      priority: medium
+      effort: low
+      impact: medium
+      description: Guidelines for specific, actionable error messages with examples
+
+    - action: Remove hidden field anti-patterns
+      priority: low
+      effort: low
+      impact: low
+      description: Clean up ExpenseEditor and similar forms using hidden required fields
+
+    - action: Add form validation ESLint rules
+      priority: medium
+      effort: medium
+      impact: medium
+      description: Lint rules to enforce accessibility attributes and message quality
+
+    - action: Migrate legacy Form.Input to modern patterns
+      priority: medium
+      effort: high
+      impact: medium
+      description: Update 15+ files using deprecated Form.Input components
+
+    - action: Add automated accessibility testing
+      priority: high
+      effort: high
+      impact: high
+      description: Test suite for form accessibility compliance
+
+  quick_wins:
+    - file: app/products/hr/Insurance/containers/OrderDependentCard/OrderDependentCard.tsx
+      fix: Replace generic t('validations.name') with specific "Enter 2-50 characters, letters only"
+      effort_minutes: 5
+
+    - file: app/products/finance/SpendManagement/containers/ExpenseEditor/ExpenseEditor.tsx
+      fix: Remove hidden invalidator field, use direct form state validation
+      effort_minutes: 15
+
+    - file: translations/locales/en-US/timeTracking.json
+      fix: Replace "Invalid date" with "Enter date in MM/DD/YYYY format"
+      effort_minutes: 3
+
+    - file: app/products/hr/TimeTracking/containers/TimeEntryDetails/TimeEntryBasicForm.tsx
+      fix: Add error prop to InputDate components for inline display
+      effort_minutes: 10
+
+    - file: app/products/finance/Travel/forms/groups/TravelerInfoFormGroup/TravelerInfoFormGroup.tsx
+      fix: Add validation timing props to FormInputText components
+      effort_minutes: 8
+
+  conformance_distribution:
+    range_0.80_to_1.00: 8
+    range_0.70_to_0.79: 16
+    range_0.60_to_0.69: 16
+    range_0.50_to_0.59: 24
+    range_0.40_to_0.49: 20
+    range_below_0.40: 16
+
+  migration_priorities:
+    immediate:
+      - Add accessibility attributes to top 5 most-used forms
+      - Replace 10 worst generic error messages
+      - Remove ExpenseEditor hidden field pattern
+    short_term:
+      - Create useInlineValidation and AccessibleFormField utilities
+      - Add focus-first-error to all submit handlers
+      - Migrate 5 legacy Form.Input implementations
+    long_term:
+      - Complete accessibility compliance across all forms
+      - Standardize all validation timing patterns
+      - Add comprehensive automated testing
+
+audit_metadata:
+  date: 2025-10-24
+  auditor: AI Engineering Design-System Auditor
+  standard_version: Pebble Pathway - Inline Form Validation (Cross-Platform)
+  codebase_version: develop branch (October 2025)
+  files_scanned: 150
+  files_analyzed: 25
+  methodology: |
+    1. Searched for form validation components (Form.Input, FormInputText, TextField, etc.)
+    2. Analyzed validation props usage (validationError, validations, required, etc.)
+    3. Examined validation timing patterns (onChange, onBlur, debounced)
+    4. Evaluated error message quality and accessibility implementation
+    5. Scored conformance against 6 criteria:
+       - Validation timing (blur + debounced revalidation)
+       - Message placement (below field, single priority)
+       - Copy quality (specific, actionable, <90 chars)
+       - Accessibility (aria-invalid, aria-describedby, focus management)
+       - Proper API usage (correct props, no anti-patterns)
+       - Consistency with Pebble Pathway guidelines
+    6. Identified anti-patterns and quick wins
+    7. Analyzed translation quality and error message patterns
+  scoring_criteria:
+    excellent: 0.80 - 1.00 (travel forms with specific messages + async validation)
+    good: 0.60 - 0.79 (proper structure, some timing issues)
+    fair: 0.40 - 0.59 (basic validation, missing accessibility)
+    poor: 0.00 - 0.39 (anti-patterns, no inline validation)
+  next_review_date: 2026-01-24

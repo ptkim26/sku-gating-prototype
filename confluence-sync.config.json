@@ -1,0 +1,313 @@
+{
+  "baseUrl": "https://rippling.atlassian.net",
+  "spaceKey": "RDS",
+  "outputDir": "docs/guides",
+  "pages": [
+    {
+      "pageId": "3964109064",
+      "title": "Avatar",
+      "outputPath": "components/avatar.md"
+    },
+    {
+      "pageId": "3949625443",
+      "title": "Breadcrumbs",
+      "outputPath": "components/breadcrumbs.md"
+    },
+    {
+      "pageId": "3947593734",
+      "title": "Badge",
+      "outputPath": "components/badge.md"
+    },
+    {
+      "pageId": "3968336634",
+      "title": "Buttons - Overview",
+      "outputPath": "components/buttons/overview.md"
+    },
+    {
+      "pageId": "3969712129",
+      "title": "Button",
+      "outputPath": "components/buttons/button.md"
+    },
+    {
+      "pageId": "3957097697",
+      "title": "Icon Button",
+      "outputPath": "components/buttons/icon-button.md"
+    },
+    {
+      "pageId": "4535615950",
+      "title": "Floating Button",
+      "outputPath": "components/buttons/floating-button.md"
+    },
+    {
+      "pageId": "4819714115",
+      "title": "Support Button",
+      "outputPath": "components/buttons/support-button.md"
+    },
+    {
+      "pageId": "4742447931",
+      "title": "Cards",
+      "outputPath": "components/cards.md"
+    },
+    {
+      "pageId": "4759322864",
+      "title": "Checklist",
+      "outputPath": "components/checklist.md"
+    },
+    {
+      "pageId": "3901687525",
+      "title": "Chip",
+      "outputPath": "components/chip.md"
+    },
+    {
+      "pageId": "3772318632",
+      "title": "Country",
+      "outputPath": "components/country.md"
+    },
+    {
+      "pageId": "3886972997",
+      "title": "Day Selector",
+      "outputPath": "components/day-selector.md"
+    },
+    {
+      "pageId": "4738024161",
+      "title": "Drawer",
+      "outputPath": "components/drawer.md"
+    },
+    {
+      "pageId": "4719116796",
+      "title": "Dropdown Menu",
+      "outputPath": "components/dropdown-menu.md"
+    },
+    {
+      "pageId": "4828725303",
+      "title": "Employee Day View",
+      "outputPath": "components/employee-day-view.md"
+    },
+    {
+      "pageId": "4738089079",
+      "title": "Expansion Panel",
+      "outputPath": "components/expansion-panel.md"
+    },
+    {
+      "pageId": "4738023520",
+      "title": "Progress Steps",
+      "outputPath": "components/progress-steps.md"
+    },
+    {
+      "pageId": "4046618821",
+      "title": "Inputs - Overview",
+      "outputPath": "components/inputs/overview.md"
+    },
+    {
+      "pageId": "4046651447",
+      "title": "Checkbox",
+      "outputPath": "components/inputs/checkbox.md"
+    },
+    {
+      "pageId": "4745889036",
+      "title": "Currency",
+      "outputPath": "components/inputs/currency.md"
+    },
+    {
+      "pageId": "4797497345",
+      "title": "Date",
+      "outputPath": "components/inputs/date.md"
+    },
+    {
+      "pageId": "4742447204",
+      "title": "Email",
+      "outputPath": "components/inputs/email.md"
+    },
+    {
+      "pageId": "4745889681",
+      "title": "File Drop",
+      "outputPath": "components/inputs/file-drop.md"
+    },
+    {
+      "pageId": "4742578217",
+      "title": "Number",
+      "outputPath": "components/inputs/number.md"
+    },
+    {
+      "pageId": "4742578862",
+      "title": "Password",
+      "outputPath": "components/inputs/password.md"
+    },
+    {
+      "pageId": "4751885144",
+      "title": "Percentage",
+      "outputPath": "components/inputs/percentage.md"
+    },
+    {
+      "pageId": "4751884457",
+      "title": "Phone Number",
+      "outputPath": "components/inputs/phone-number.md"
+    },
+    {
+      "pageId": "4050550789",
+      "title": "Radio",
+      "outputPath": "components/inputs/radio.md"
+    },
+    {
+      "pageId": "4600823820",
+      "title": "Segmented Control",
+      "outputPath": "components/inputs/segmented-control.md"
+    },
+    {
+      "pageId": "4746282196",
+      "title": "Select",
+      "outputPath": "components/inputs/select.md"
+    },
+    {
+      "pageId": "4797563007",
+      "title": "Signature",
+      "outputPath": "components/inputs/signature.md"
+    },
+    {
+      "pageId": "4742381773",
+      "title": "Text Input",
+      "outputPath": "components/inputs/text-input.md"
+    },
+    {
+      "pageId": "4745888772",
+      "title": "Text Area",
+      "outputPath": "components/inputs/text-area.md"
+    },
+    {
+      "pageId": "4751298610",
+      "title": "Text Auto Suggest",
+      "outputPath": "components/inputs/text-auto-suggest.md"
+    },
+    {
+      "pageId": "4750377032",
+      "title": "Time",
+      "outputPath": "components/inputs/time.md"
+    },
+    {
+      "pageId": "4751589377",
+      "title": "Timezone",
+      "outputPath": "components/inputs/timezone.md"
+    },
+    {
+      "pageId": "4832657447",
+      "title": "Multi-select",
+      "outputPath": "components/inputs/multi-select.md"
+    },
+    {
+      "pageId": "4832591892",
+      "title": "Tree",
+      "outputPath": "components/inputs/tree.md"
+    },
+    {
+      "pageId": "3893657610",
+      "title": "Label",
+      "outputPath": "components/label.md"
+    },
+    {
+      "pageId": "4819617065",
+      "title": "Lists",
+      "outputPath": "components/lists.md"
+    },
+    {
+      "pageId": "4737565623",
+      "title": "Modal",
+      "outputPath": "components/modal.md"
+    },
+    {
+      "pageId": "4724852200",
+      "title": "Notice",
+      "outputPath": "components/notice.md"
+    },
+    {
+      "pageId": "4832559618",
+      "title": "Object",
+      "outputPath": "components/object.md"
+    },
+    {
+      "pageId": "4751851648",
+      "title": "Pagination",
+      "outputPath": "components/pagination.md"
+    },
+    {
+      "pageId": "3896345378",
+      "title": "Progress Bar",
+      "outputPath": "components/progress-bar.md"
+    },
+    {
+      "pageId": "4759322771",
+      "title": "Slider",
+      "outputPath": "components/slider.md"
+    },
+    {
+      "pageId": "3922427910",
+      "title": "Snackbar",
+      "outputPath": "components/snackbar.md"
+    },
+    {
+      "pageId": "3908894879",
+      "title": "Spinner",
+      "outputPath": "components/spinner.md"
+    },
+    {
+      "pageId": "3949428811",
+      "title": "Status",
+      "outputPath": "components/status.md"
+    },
+    {
+      "pageId": "3995107570",
+      "title": "Tabs",
+      "outputPath": "components/tabs.md"
+    },
+    {
+      "pageId": "4768104828",
+      "title": "Table Basic",
+      "outputPath": "components/table-basic.md"
+    },
+    {
+      "pageId": "4819517470",
+      "title": "Text Clip",
+      "outputPath": "components/text-clip.md"
+    },
+    {
+      "pageId": "4767940630",
+      "title": "Text Snippet",
+      "outputPath": "components/text-snippet.md"
+    },
+    {
+      "pageId": "4020109313",
+      "title": "Tooltip",
+      "outputPath": "components/tooltip.md"
+    },
+    {
+      "pageId": "4837834830",
+      "title": "Form",
+      "outputPath": "components/form.md"
+    },
+    {
+      "pageId": "4837834942",
+      "title": "Settings Form",
+      "outputPath": "components/settings-form.md"
+    },
+    {
+      "pageId": "4878237802",
+      "title": "Rippling Responsive Strategy",
+      "outputPath": "building-blocks/responsive-strategy.md"
+    },
+    {
+      "pageId": "3418030121",
+      "title": "Dashboards",
+      "outputPath": "building-blocks/dashboards.md"
+    },
+    {
+      "pageId": "3868524572",
+      "title": "Workflow Automator v2",
+      "outputPath": "building-blocks/workflow-automator.md"
+    }
+  ],
+  "_instructions": {
+    "how_to_find_page_ids": "Open a Confluence page and look at the URL. The page ID is the number after /pages/. For example: https://rippling.atlassian.net/wiki/spaces/PEBBLE/pages/123456789/Button+Guidelines - the page ID is 123456789",
+    "how_to_add_pages": "Add more page objects to the 'pages' array above. Each page needs: pageId (string), title (string), outputPath (string - relative path within outputDir)",
+    "outputPath_tips": "Use clear paths like 'components/[component-name].md' or 'patterns/[pattern-name].md'. Directories will be created automatically."
+  }
+}
+

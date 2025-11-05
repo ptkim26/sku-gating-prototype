@@ -1,366 +1,426 @@
-# Pebble Playground Cursor Rules
+# Cursor Rules for Pebble Playground
 
-## Project Context
-This is a prototyping environment for Rippling's Pebble Design System. It's designed to be AI-friendly and enable rapid experimentation with Pebble components.
+## 🎯 Primary Directive: Documentation First
 
-## Component Import Patterns
+**ALWAYS check the `docs/` folder BEFORE:**
+- Writing any Pebble component code
+- Looking at Pebble source code in the monorepo
+- Making assumptions about component APIs
+- Hardcoding colors, spacing, or typography
 
-### Standard Components
+## 📚 Required Reading Order
+
+When implementing ANY Pebble UI:
+
+1. **FIRST:** Check `docs/COMPONENT_CATALOG.md` for quick API reference
+   - Look for "Common Gotchas" section at the top
+   - Find the component you need
+   - Read the critical warnings (⚠️)
+   - Copy the example code
+
+2. **SECOND:** Check `docs/TOKEN_CATALOG.md` for design tokens
+   - Find the appropriate color/spacing/typography tokens
+   - NEVER hardcode values
+
+3. **THIRD:** Check `docs/guides/components/[component-name].md` for comprehensive Confluence docs
+   - Read usage guidelines
+   - Understand when to use vs not use
+   - See design patterns
+
+4. **LAST RESORT:** Only if docs are incomplete, check Pebble source code at:
+   - `/Users/paulbest/Documents/htdocs/pebble/packages/rippling-ui/source/`
+
+## 🚫 Forbidden Patterns
+
+### NEVER do this:
 ```typescript
-import Button from '@rippling/pebble/Button';
-import Modal from '@rippling/pebble/Modal';
-import Drawer from '@rippling/pebble/Drawer';
-import Dropdown from '@rippling/pebble/Dropdown';
-import Icon from '@rippling/pebble/Icon';
-import Typography from '@rippling/pebble/Typography';
+// ❌ Hardcoded colors
+backgroundColor: 'white'
+color: '#000000'
+
+// ❌ Wrong Icon API
+<Icon size={Icon.SIZES.M} />  // Icon.SIZES doesn't exist!
+
+// ❌ Wrong Input API
+<Input.Text size={Input.SIZES.M} />  // Should be Input.Text.SIZES.M
+
+// ❌ Wrong component name
+import Tooltip from '@rippling/pebble/Tooltip';  // It's called Tip!
+
+// ❌ Hardcoded spacing
+padding: '16px'
+margin: '24px'
 ```
 
-### Input Components
+### ALWAYS do this:
 ```typescript
-import Select from '@rippling/pebble/Inputs/Select';
-import Input from '@rippling/pebble/Inputs';
-// Then use: Input.Text, Input.Checkbox, Input.Switch, etc.
-```
-
-### Layout Components
-```typescript
-import Box from '@rippling/pebble/Layout/Box';
-import Grid from '@rippling/pebble/Layout/Grid';
-```
-
-### Theme
-```typescript
-import { useTheme } from '@rippling/pebble/theme';
+// ✅ Use theme tokens
 const { theme } = useTheme();
+backgroundColor: theme.colorSurface
+color: theme.colorOnSurface
+
+// ✅ Correct Icon API
+<Icon size={20} />  // Use numbers!
+
+// ✅ Correct Input API
+<Input.Text size={Input.Text.SIZES.M} />
+
+// ✅ Correct component name
+import Tip from '@rippling/pebble/Tip';
+
+// ✅ Use spacing tokens
+padding: theme.space400
+margin: theme.space600
+
+// ✅ Use HStack/VStack for layouts
+import { HStack, VStack } from '@rippling/pebble/Layout/Stack';
+
+<HStack gap="1rem" alignItems="center">
+  <Avatar name="John" />
+  <Typography>John Doe</Typography>
+</HStack>
+
+// Instead of:
+<Box display="flex" direction="row" gap="1rem">  // Less semantic
 ```
 
-## Theme Token Usage
+## 🎨 Theme Token Rules
 
-### ALWAYS use theme tokens for:
-- **Colors**: `theme.colorSurface`, `theme.colorPrimary`, `theme.colorOnSurface`
-- **Typography**: `theme.typestyleBodyMedium400`, `theme.typestyleHeadingLarge700`
-- **Spacing**: `theme.space200`, `theme.space400`
-- **Border Radius**: `theme.shapeCornerM`, `theme.shapeCornerS`
+1. **ALWAYS import and use theme:**
+   ```typescript
+   import { useTheme } from '@rippling/pebble/theme';
+   
+   const MyComponent = () => {
+     const { theme } = useTheme();
+     // Use theme.* for all values
+   };
+   ```
 
-### NEVER hardcode:
-- ❌ `backgroundColor: 'white'` → ✅ `backgroundColor: theme.colorSurface`
-- ❌ `color: '#000000'` → ✅ `color: theme.colorOnSurface`
-- ❌ `padding: '16px'` → ✅ `padding: theme.space400`
-- ❌ `fontSize: '14px'` → ✅ Use Typography component or theme.typestyleBodyMedium400
+2. **For styled components:**
+   ```typescript
+   import styled from '@emotion/styled';
+   
+   const StyledDiv = styled.div`
+     color: ${({ theme }) => (theme as any).colorOnSurface};
+     padding: ${({ theme }) => (theme as any).space400};
+   `;
+   ```
 
-## Animation Patterns
+3. **Common token patterns:**
+   - Colors: `theme.colorPrimary`, `theme.colorOnSurface`, `theme.colorSuccess`
+   - Spacing: `theme.space200`, `theme.space400`, `theme.space600`
+   - Typography: `theme.typestyleBodyMedium400`, `theme.typestyleTitleLarge600`
+   - Borders: `theme.shapeCornerM`, `theme.shapeCornerL`
 
-Import animation constants from local utils:
+## 🎨 Design Token Quick Reference
+
+**USE THIS SECTION CONSTANTLY - DON'T GUESS TOKEN NAMES**
+
+### Colors - Surfaces & Backgrounds
 ```typescript
-import { DURATION, EASING, SCALE } from '../utils/animation-constants';
+theme.colorSurface              // Base page background
+theme.colorSurfaceBright         // Elevated cards, panels, modals
+theme.colorSurfaceContainerLow   // Subtle highlights (inline code, hover states)
+theme.colorSurfaceContainerHigh  // Medium emphasis containers
+theme.colorSurfaceContainerHighest // Strong emphasis (code blocks, strong highlights)
 ```
 
-### Timing
-- **DURATION.fast** (150ms) - Fast interactions (tooltips, dropdowns, button press)
-- **DURATION.standard** (250ms) - Standard UI animations (drawers, modals)
-- **DURATION.long** (350ms) - Complex page transitions
-
-### Easing
-- **EASING.easeOut** - For entrance animations (starts fast, ends slow)
-- **EASING.easeIn** - For exit animations (starts slow, ends fast)  
-- **EASING.easeInOut** - For elements that transform in place
-
-### Scale
-- **SCALE.buttonActive** (0.97) - Button press feedback
-- **SCALE.initial** (0.93) - Starting scale for fade+scale entrances
-- **SCALE.full** (1.0) - Final scale (100%)
-
-### Pattern: Entrance Animation
+### Colors - Text & Foreground
 ```typescript
-import { keyframes } from '@emotion/react';
-
-const fadeScaleIn = keyframes`
-  from {
-    opacity: 0;
-    transform: scale(${SCALE.initial});
-  }
-  to {
-    opacity: 1;
-    transform: scale(${SCALE.full});
-  }
-`;
-
-const AnimatedDiv = styled.div`
-  animation: ${fadeScaleIn} ${DURATION.fast} ${EASING.easeOut};
-`;
+theme.colorOnSurface            // Primary text color (high emphasis)
+theme.colorOnSurfaceVariant     // Secondary text color (medium emphasis - descriptions, labels)
+theme.colorPrimary              // Primary brand color (links, primary actions)
+theme.colorOnPrimary            // Text on primary colored backgrounds
+theme.colorOnPrimaryContainer   // Text on primary container backgrounds
 ```
 
-### Pattern: Exit Animation
+### Colors - Semantic (Status & Feedback)
 ```typescript
-const fadeScaleOut = keyframes`
-  from {
-    opacity: 1;
-    transform: scale(${SCALE.full});
-  }
-  to {
-    opacity: 0;
-    transform: scale(${SCALE.initial});
-  }
-`;
-
-const AnimatedDiv = styled.div`
-  &.closing {
-    animation: ${fadeScaleOut} ${DURATION.fast} ${EASING.easeIn};
-  }
-`;
+theme.colorError                // Error text and icons
+theme.colorErrorContainer       // Error background containers
+theme.colorSuccess              // Success text and icons
+theme.colorSuccessContainer     // Success background containers
+theme.colorWarning              // Warning text and icons
 ```
 
-## File Structure
-
-### New Demos
-- Place in `src/demos/`
-- Name pattern: `kebab-case-demo.tsx`
-- Export default component
-- Include inline documentation
-
-### Reusable Components
-- Place in `src/components/`
-- Make generic and reusable
-- Document props with JSDoc
-
-### Utilities
-- Place in `src/utils/`
-- Keep pure functions
-- Export named functions
-
-### Forked Components
-- Place in `src/demos/[DemoName]/Forked[ComponentName]/`
-- Document why forked and what changed
-- Fix all import paths to use `@rippling/pebble`
-
-## Component Usage Patterns
-
-### Button
+### Colors - Borders & Dividers
 ```typescript
-<Button 
-  size={Button.SIZES.M}                      // XS | S | M | L
-  appearance={Button.APPEARANCES.PRIMARY}    // PRIMARY | ACCENT | DESTRUCTIVE | SUCCESS | OUTLINE | GHOST
-  onClick={() => {}}
->
-  Label
-</Button>
+theme.colorOutline              // Standard borders, medium emphasis
+theme.colorOutlineVariant       // Subtle borders, dividers, low emphasis
 ```
 
-### Modal
+### Colors - Interactive Elements
 ```typescript
-const [isOpen, setIsOpen] = useState(false);
-
-<Modal 
-  isVisible={isOpen}                // Required: controls visibility
-  onCancel={() => setIsOpen(false)} // Required: close handler
-  title="Title"                     // Required: modal title
->
-  <div style={{ padding: '1rem' }}>Content</div>
-  <ModalFooter>
-    <ModalCloseButton>Cancel</ModalCloseButton>
-    <Button appearance={Button.APPEARANCES.PRIMARY}>Confirm</Button>
-  </ModalFooter>
-</Modal>
+theme.colorPrimaryContainer     // Primary button/chip backgrounds
+theme.colorSecondaryContainer   // Secondary button/chip backgrounds
 ```
 
-### Drawer
+### Spacing Scale (Use for padding, margin, gap)
 ```typescript
-<Drawer
-  isVisible={isOpen}                 // Required
-  onCancel={() => setIsOpen(false)}  // Required
-  title="Title"                      // Required
-  isCompact={false}                  // Optional: false = 600px, true = 400px
->
-  Content
-  <Drawer.Footer>
-    <Drawer.CloseButton>Cancel</Drawer.CloseButton>
-  </Drawer.Footer>
-</Drawer>
+theme.space100   // 4px   - Tiny spacing (icon padding)
+theme.space200   // 8px   - Extra small (compact spacing)
+theme.space300   // 12px  - Small (list item spacing)
+theme.space400   // 16px  - Medium (default padding, button padding)
+theme.space600   // 24px  - Large (card padding, section spacing)
+theme.space800   // 32px  - Extra large (major section spacing)
+theme.space1000  // 40px  - XXL (page padding)
+theme.space1200  // 48px  - XXXL (major layout spacing)
+theme.space1600  // 64px  - Huge (hero sections, major page padding)
 ```
 
-### Select
+### Typography - Use V2 Tokens
 ```typescript
-<Select
-  id="unique-id"          // Required
-  isRequired={false}      // Required
-  placeholder="..."       // Optional
-  list={[                 // Required: array of { label, value }
-    { label: 'Option 1', value: 'opt1' }
-  ]}
-  value={selectedValue}   // Controlled value
-  onChange={(value) => setSelectedValue(value as string)}
-/>
+// Display (Hero text, page titles)
+theme.typestyleV2DisplayLarge   // 57px, bold - Hero headings
+theme.typestyleV2DisplayMedium  // 45px, bold - Major page titles
+theme.typestyleV2DisplaySmall   // 36px, bold - Section headings
+
+// Titles (Section headings, card titles)
+theme.typestyleV2TitleLarge     // 22px, 600 - Large section titles
+theme.typestyleV2TitleMedium    // 16px, 600 - Medium section titles, card headers
+theme.typestyleV2TitleSmall     // 14px, 600 - Small section titles, labels
+
+// Body (Regular content text)
+theme.typestyleV2BodyLarge      // 16px, 400 - Primary body text
+theme.typestyleV2BodyMedium     // 14px, 400 - Secondary body text
+theme.typestyleV2BodySmall      // 12px, 400 - Captions, fine print
+
+// Labels (Form labels, button text)
+theme.typestyleV2LabelLarge     // 14px, 600 - Form labels
+theme.typestyleV2LabelMedium    // 12px, 600 - Small labels
+theme.typestyleV2LabelSmall     // 11px, 600 - Tiny labels
+
+// Code (Monospace text)
+theme.typestyleV2CodeLarge      // 16px, monospace - Large code blocks
+theme.typestyleV2CodeMedium     // 14px, monospace - Standard code blocks
+theme.typestyleV2CodeSmall      // 12px, monospace - Inline code
 ```
 
-### Dropdown
+### Shape (Border Radius)
 ```typescript
-<Dropdown
-  list={[ { label: 'Edit', value: 'edit' } ]}
-  onChange={(value) => handleChange(value)}
-  shouldAutoClose         // Closes after selection
->
-  <Button>Trigger</Button>
-</Dropdown>
+theme.shapeCornerS      // 4px  - Small radius (buttons, small chips)
+theme.shapeCornerM      // 8px  - Medium radius (cards, inputs, code)
+theme.shapeCornerL      // 12px - Large radius (large cards)
+theme.shapeCornerXl     // 16px - Extra large radius (major containers)
+theme.shapeCorner3xl    // 28px - Huge radius (special cards, tables)
+theme.shapeCornerFull   // 999px - Fully rounded (pills, avatars, icons)
 ```
 
-## Common Gotchas
+### Token Usage Rules
 
-### Enum Values
-❌ **Wrong**: `<Button size="M" appearance="PRIMARY">`  
-✅ **Correct**: `<Button size={Button.SIZES.M} appearance={Button.APPEARANCES.PRIMARY}>`
+1. **NEVER hardcode these values:**
+   ```typescript
+   ❌ backgroundColor: '#ffffff'
+   ❌ color: 'black'
+   ❌ padding: '16px'
+   ❌ fontSize: '14px'
+   ❌ borderRadius: '8px'
+   ```
 
-### Modal/Drawer Visibility
-❌ **Wrong**: `<Modal isOpen={true}>`  
-✅ **Correct**: `<Modal isVisible={true}>`
+2. **ALWAYS use tokens:**
+   ```typescript
+   ✅ backgroundColor: theme.colorSurface
+   ✅ color: theme.colorOnSurface
+   ✅ padding: theme.space400
+   ✅ ${theme.typestyleV2BodyMedium}
+   ✅ borderRadius: theme.shapeCornerM
+   ```
 
-### Theme Access
-❌ **Wrong**: Using theme outside component or without hook  
-✅ **Correct**: `const { theme } = useTheme()` inside component
+3. **Common patterns:**
+   ```typescript
+   // Inline code
+   background: theme.colorSurfaceContainerLow
+   borderRadius: theme.shapeCornerM
+   
+   // Code blocks
+   background: theme.colorSurfaceContainerHighest
+   borderRadius: theme.shapeCornerM
+   
+   // Cards/Panels
+   background: theme.colorSurfaceBright
+   borderRadius: theme.shapeCornerXl
+   border: 1px solid theme.colorOutlineVariant
+   
+   // Standard spacing between elements
+   gap: theme.space400  // or use VStack/HStack with gap="1rem"
+   ```
 
-### Hardcoded Colors
-❌ **Wrong**: `backgroundColor: 'white'`  
-✅ **Correct**: `backgroundColor: theme.colorSurface`
+4. **When to use which surface color:**
+   - `colorSurface` - Page background (lowest elevation)
+   - `colorSurfaceBright` - Cards and panels (elevated)
+   - `colorSurfaceContainerLow` - Subtle highlights, inline code
+   - `colorSurfaceContainerHigh` - Medium emphasis
+   - `colorSurfaceContainerHighest` - Strong emphasis, code blocks
 
-### Icon-Only Buttons
-❌ **Wrong**: `<Button.Icon icon={Icon.TYPES.SETTINGS_OUTLINE} />`  
-✅ **Correct**: `<Button.Icon icon={Icon.TYPES.SETTINGS_OUTLINE} aria-label="Settings" />`
+## 📁 Project Structure
 
-## TypeScript Guidelines
-
-### Use explicit types
-```typescript
-// Good
-const [value, setValue] = useState<string | undefined>(undefined);
-const handleChange = (newValue: string) => setValue(newValue);
-
-// Avoid
-const [value, setValue] = useState(undefined);
-const handleChange = (newValue) => setValue(newValue);
+```
+pebble-playground/
+├── docs/                          ← START HERE
+│   ├── COMPONENT_CATALOG.md       ← Quick component reference
+│   ├── TOKEN_CATALOG.md           ← Quick token reference
+│   ├── AI_PROMPTING_GUIDE.md      ← Usage patterns
+│   └── guides/         ← Full documentation
+│       ├── components/            ← Synced from Confluence
+│       ├── tokens/                ← Auto-generated from npm
+│       ├── patterns/              ← UX patterns
+│       └── building-blocks/       ← Rippling-specific features
+├── src/
+│   ├── demos/                     ← Example implementations
+│   ├── overrides/                 ← Component customizations
+│   └── utils/                     ← Shared utilities
+└── scripts/                       ← Tooling
 ```
 
-### Component Props
-```typescript
-interface MyDemoProps {
-  title: string;
-  onClose?: () => void;
-}
+## 🔄 Documentation Updates
 
-const MyDemo: React.FC<MyDemoProps> = ({ title, onClose }) => {
-  // ...
-};
-```
+### Auto-Generated Docs (DON'T manually edit)
+- `docs/guides/tokens/` - Run `yarn generate-token-docs` to update
+- `docs/guides/components/` - Run `yarn sync-confluence` to update
 
-## Styling Approach
+### Manual Docs (Edit as needed)
+- `docs/COMPONENT_CATALOG.md` - Update with common patterns
+- `docs/TOKEN_CATALOG.md` - Update with usage examples
+- `docs/guides/patterns/` - Add new UX patterns
 
-### Prefer emotion/styled
-```typescript
-import styled from '@emotion/styled';
+## 🎯 Component Override System
 
-const Container = styled.div`
-  background-color: ${({ theme }) => theme.colorSurface};
-  padding: ${({ theme }) => theme.space400};
-  border-radius: ${({ theme }) => theme.shapeCornerM};
-`;
-```
+When you need to customize a Pebble component:
 
-### Inline styles for simple cases
-```typescript
-<div style={{
-  backgroundColor: theme.colorSurface,
-  padding: theme.space400,
-}}>
-```
+1. **Check if you can use props first** - Don't override if props solve it
+2. **Use the override system:**
+   ```bash
+   yarn override ComponentName
+   ```
+3. **Only modify the specific files you need**
+4. **Document your changes in the component's README.md**
 
-## Accessibility
+## 🚀 Creating New Demos
 
-### Always include:
-- `aria-label` for icon-only interactive elements
-- `id` for form inputs
-- Semantic HTML (`<button>`, `<nav>`, `<main>`, etc.)
-- Proper heading hierarchy (`h1` → `h2` → `h3`)
+### Recommended: Use the App Shell Template
 
-### Examples:
-```typescript
-// Icon button
-<Button.Icon 
-  icon={Icon.TYPES.SETTINGS_OUTLINE}
-  aria-label="Open settings"
-/>
+When a user asks to **"Create a new demo called [Name] by copying app-shell-demo.tsx"**, follow these steps:
 
-// Form input
-<Input.Text
-  id="email-input"
-  label="Email"
-  aria-required="true"
-/>
-```
+1. **Copy the app shell:**
+   - Read `src/demos/app-shell-demo.tsx`
+   - Convert the name to kebab-case (e.g., "Employee Directory" → "employee-directory-demo.tsx")
+   - Convert to PascalCase for component name (e.g., "EmployeeDirectoryDemo")
+   - Create the new file in `src/demos/[kebab-case]-demo.tsx`
+   - Replace `AppShellDemo` with the new component name throughout
+   - Update the description comment
 
-## Documentation
+2. **Wire up in main.tsx:**
+   - Add import: `import [PascalName]Demo from './demos/[kebab]-demo';`
+   - Add to `EditorType` enum: `[UPPER_SNAKE] = '[kebab]',`
+   - Add to `DEMO_OPTIONS` array with appropriate label
+   - Add to `DEMO_ROUTES` object: `'/[kebab]-demo': EditorType.[UPPER_SNAKE],`
+   - Add `<Route>` in the Routes component
 
-### Inline Comments
-- Explain *why*, not *what*
-- Document non-obvious behavior
-- Include examples for complex logic
+3. **Add card to index page:**
+   - Open `src/demos/index-page.tsx`
+   - Add entry to `DEMO_CARDS` array with title, description, path, and appropriate icon
 
-### Component Documentation
-```typescript
-/**
- * AnimationsDemo showcases entrance/exit animations for Pebble components.
- * 
- * Features:
- * - Before/after comparisons
- * - Interactive controls for size/appearance
- * - Rotating caret in ForkedSelect
- * 
- * @example
- * <AnimationsDemo />
- */
-const AnimationsDemo = () => {
-  // ...
-};
-```
+4. **Confirm completion:**
+   - Tell the user their demo is ready at `http://localhost:4201/[kebab]-demo`
+   - Remind them they can now customize the main content area
 
-## Performance
+**The app shell provides:** Navigation bar, sidebar, content area, and theme integration. User should focus on customizing the main content area only.
 
-### Memoization
-Use for expensive computations:
-```typescript
-const filteredList = useMemo(() => 
-  list.filter(item => item.value.includes(searchQuery)),
-  [list, searchQuery]
-);
-```
+### Alternative: Create from Scratch
 
-### Callbacks
-Wrap event handlers:
-```typescript
-const handleClick = useCallback(() => {
-  doSomething();
-}, [dependencies]);
-```
+If you need a simpler demo without the app shell:
 
-## Git Commit Messages
+1. **Run the script:**
+   ```bash
+   yarn new:demo
+   ```
 
-Follow conventional commits:
-- `feat: add drawer animation demo`
-- `fix: correct theme token in modal demo`
-- `docs: update AI prompting guide`
-- `refactor: extract animation constants`
-- `chore: update dependencies`
+2. **Or manually create:** `src/demos/kebab-case-demo.tsx` using this minimal template:
+   ```typescript
+   import React, { useState } from 'react';
+   import styled from '@emotion/styled';
+   import { useTheme } from '@rippling/pebble/theme';
+   import Button from '@rippling/pebble/Button';
+   // Import other components as needed
 
-## When in Doubt
+   /**
+    * MyDemo
+    * 
+    * Brief description of what this demo showcases.
+    * 
+    * Components used:
+    * - Button (docs/guides/components/buttons/button.md)
+    * - [List other components with their doc paths]
+    */
 
-1. Check `src/demos/` for similar examples
-2. Reference `docs/AI_PROMPTING_GUIDE.md`
-3. Look at Pebble Storybook: https://pebble.rippling.dev
-4. Ask specific questions about patterns
+   const MyDemo: React.FC = () => {
+     const { theme } = useTheme();
+     
+     return (
+       <Container theme={theme}>
+         {/* Your demo content */}
+       </Container>
+     );
+   };
 
-## Key Principles
+   const Container = styled.div`
+     padding: ${({ theme }) => (theme as any).space600};
+     background-color: ${({ theme }) => (theme as any).colorSurface};
+   `;
 
-1. **Theme Tokens First** - Always use theme, never hardcode
-2. **Self-Documenting** - Code should explain itself
-3. **Type Safe** - Use TypeScript properly
-4. **Consistent Patterns** - Follow established patterns in existing demos
-5. **Accessibility** - ARIA labels, semantic HTML, keyboard navigation
-6. **Performance** - Memoize when needed, avoid unnecessary re-renders
+   export default MyDemo;
+   ```
+
+3. **Add to main.tsx:**
+   - Add to `EditorType` enum
+   - Import the demo
+   - Add to `DEMO_OPTIONS` array
+   - Add route in Routes component
+   - Add to `DEMO_ROUTES` mapping
+
+4. **Add to index page:** Update `DEMO_CARDS` array in `src/demos/index-page.tsx`
+
+## 🐛 Debugging Component Issues
+
+If you encounter an error with a Pebble component:
+
+1. **Check `docs/COMPONENT_CATALOG.md` "Common Gotchas"** - Your issue might be listed
+2. **Verify you're using the correct API** - Check the example code
+3. **Check the Confluence docs** - May have additional context
+4. **Search the Pebble source** - Only if docs don't have the answer
+5. **Update the docs** - If you find a new gotcha, add it to `COMPONENT_CATALOG.md`
+
+## 📝 Code Review Checklist
+
+Before considering code complete:
+
+- [ ] All colors use theme tokens (no hardcoded colors)
+- [ ] All spacing uses theme tokens (no hardcoded px values)
+- [ ] All typography uses theme tokens or Typography component
+- [ ] Icon sizes are numbers (not Icon.SIZES)
+- [ ] Input.Text uses Input.Text.SIZES (not Input.SIZES)
+- [ ] Tip component (not Tooltip)
+- [ ] All interactive icons have aria-label
+- [ ] Component APIs match COMPONENT_CATALOG.md examples
+- [ ] No linter errors
+
+## 🎓 Learning Resources
+
+1. **Quick Reference:** `docs/COMPONENT_CATALOG.md` + `docs/TOKEN_CATALOG.md`
+2. **Deep Dive:** `docs/guides/components/[component].md`
+3. **Patterns:** `docs/guides/patterns/`
+4. **Live Examples:** Run `yarn dev` and check existing demos
+5. **Official Storybook:** https://pebble.rippling.dev
+
+## 💡 Tips for Success
+
+1. **When in doubt, check docs first** - Save time by not making assumptions
+2. **Copy from existing demos** - `src/demos/` has working examples
+3. **Use TypeScript** - It will catch many API mistakes early
+4. **Test in both light and dark modes** - Theme tokens handle this automatically
+5. **Start simple** - Use basic Pebble components before customizing
+
+---
+
+**Remember: This playground exists to make prototyping with Pebble fast and correct. The docs are your fastest path to success.**
 

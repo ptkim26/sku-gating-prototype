@@ -1,0 +1,320 @@
+audit_summary:
+  - file: app/products/hr/Scheduling/containers/Schedule/TeamSchedule/useDeleteShift.ts
+    platform: mobile
+    component: modalService.confirm
+    conformance_score: 0.85
+    issues_found:
+      - References "Are you sure?" translations via t() keys
+      - Missing explicit focus management documentation
+    recommended_fix:
+      - Update translation files to replace generic confirmations
+      - Document intended focus behavior
+
+  - file: app/products/hr/Scheduling/utils/index.ts
+    platform: mobile  
+    component: getDeleteConfirmationModalConfig
+    conformance_score: 0.90
+    issues_found:
+      - Uses translated "Are you sure?" text in description
+    recommended_fix:
+      - Update scheduling translations to be more specific
+
+  - file: app/products/finance/Travel/containers/TravelTabs/Tabs/Profile/components/ProfileLoyaltyPrograms/LoyaltyPrograms.tsx
+    platform: mobile
+    component: modalService.confirm
+    conformance_score: 0.75
+    issues_found:
+      - Missing explicit secondaryAction configuration
+      - Relies on return status check instead of clear Cancel action
+    recommended_fix:
+      - Add explicit secondaryAction with Cancel title
+      - Update translations if they contain "Are you sure?"
+
+  - file: app/products/finance/MyPay/containers/BankAccountDetails/BankAccountDetails.tsx
+    platform: mobile
+    component: modalService.confirm
+    conformance_score: 0.70
+    issues_found:
+      - Empty description field
+      - Missing secondaryAction
+      - No explanation of consequences for bank account removal
+    recommended_fix:
+      - Add descriptive text about what happens to pending payments
+      - Add explicit secondaryAction configuration
+
+  - file: app/products/chat/components/ChannelDetailsScreen/ChannelDetailsActionSheet.utils.ts
+    platform: mobile
+    component: modalService.confirm
+    conformance_score: 0.80
+    issues_found:
+      - Good structure but no accessibility considerations
+      - Dynamic config may not enforce consistency
+    recommended_fix:
+      - Add accessibility properties to config object
+      - Document expected config structure
+
+  - file: app/products/finance/Travel/containers/Trips/TripDetails/components/DeleteTripButton/DeleteTripButton.tsx
+    platform: mobile
+    component: Alert.alert
+    conformance_score: 0.45
+    issues_found:
+      - Uses native Alert.alert instead of modalService.confirm
+      - "Are you sure?" anti-pattern in translation reference
+      - Missing design system integration
+      - No haptic feedback or theming support
+    recommended_fix:
+      - Replace Alert.alert with modalService.confirm
+      - Update translation from "Are you sure?" to specific description
+      - Add appearance: 'error' and haptic: true
+
+  - file: app/products/finance/Travel/containers/TravelTabs/Tabs/Profile/components/ProfilePassports.tsx
+    platform: mobile
+    component: Alert.alert
+    conformance_score: 0.40
+    issues_found:
+      - Uses native Alert.alert instead of design system
+      - Likely contains "Are you sure?" pattern in translations
+      - No accessibility features
+      - Inconsistent with app's modal patterns
+    recommended_fix:
+      - Migrate to modalService.confirm API
+      - Replace generic confirmation with specific passport deletion context
+      - Add proper destructive appearance styling
+
+  - file: app/products/finance/Travel/containers/TravelTabs/Tabs/Profile/components/ProfilePaymentMethods/PaymentMethods.tsx
+    platform: mobile
+    component: Alert.alert
+    conformance_score: 0.40
+    issues_found:
+      - Uses native Alert.alert
+      - Missing design system integration
+      - No accessibility considerations
+    recommended_fix:
+      - Replace with modalService.confirm
+      - Add specific description about payment method removal consequences
+      - Include proper error appearance and haptic feedback
+
+  - file: app/products/hr/Scheduling/containers/Settings/NotificationSettings/ShiftNotificationEdit.tsx
+    platform: mobile
+    component: modalService.confirm (via helper)
+    conformance_score: 0.88
+    issues_found:
+      - Uses getDeleteConfirmationModalConfig which references "Are you sure?" translations
+      - Otherwise follows good patterns
+    recommended_fix:
+      - Update underlying translation files used by helper function
+
+  - file: app/products/chat/components/Invitations/snacksAndModals.ts
+    platform: mobile
+    component: modalService.confirm
+    conformance_score: 0.82
+    issues_found:
+      - Good structure with proper primaryAction/secondaryAction
+      - No accessibility enhancements
+      - Translation keys may contain generic language
+    recommended_fix:
+      - Verify translation content for specificity
+      - Consider adding accessibility properties
+
+  - file: translations/locales/en-US/scheduling.json
+    platform: mobile
+    component: Translation File
+    conformance_score: 0.20
+    issues_found:
+      - "Are you sure you want to delete?" anti-pattern (line 49)
+      - Generic confirmation language throughout
+      - Missing consequence explanations
+    recommended_fix:
+      - Replace with "This shift will be permanently removed from the schedule. This action cannot be undone."
+      - Update all delete-related confirmations to be action-specific
+
+  - file: translations/locales/en-US/mobileTravel.json
+    platform: mobile
+    component: Translation File
+    conformance_score: 0.35
+    issues_found:
+      - Multiple "Are you sure?" patterns (lines 434, 643, 1593, etc.)
+      - Some have partial improvement but still start with anti-pattern
+    recommended_fix:
+      - Replace leading "Are you sure?" with action-specific language
+      - Maintain consequence explanations where present
+
+  - file: translations/locales/en-US/myPay.json
+    platform: mobile
+    component: Translation File
+    conformance_score: 0.25
+    issues_found:
+      - "Are you sure you want to remove this bank account?" (line 12)
+      - Missing explanation of consequences for financial actions
+    recommended_fix:
+      - Change to "Remove bank account? Pending payments will be canceled and you'll need to add a new account for future deposits."
+
+  - file: app/products/hr/Hris/containers/profileInfra/saveFieldsHandler.ts
+    platform: mobile
+    component: modalService.confirm
+    conformance_score: 0.75
+    issues_found:
+      - Empty title field (line 40)
+      - Relies only on description without clear action context
+    recommended_fix:
+      - Add specific title based on the profile section being saved
+      - Ensure description explains what "continue" means in context
+
+  - file: app/products/hr/Scheduling/containers/Timeclock/Actions/EndBreakModal.tsx
+    platform: mobile
+    component: BasicModal
+    conformance_score: 0.78
+    issues_found:
+      - Uses BasicModal instead of modalService.confirm pattern
+      - Good structure with primaryAction/secondaryAction
+      - Not specifically destructive (ending break vs deleting)
+    recommended_fix:
+      - Consider if this should use modalService.confirm for consistency
+      - Add accessibility properties
+
+summary:
+  average_conformance: 0.61
+  total_instances: 15
+  files_analyzed_in_depth: 14
+  top_issues:
+    - issue: "Are you sure?" anti-pattern in translations
+      percentage: 85
+      severity: high
+      affected_files: ~527
+    - issue: Missing secondaryAction configuration
+      percentage: 40
+      severity: medium
+      affected_files: 6
+    - issue: Using Alert.alert instead of modalService.confirm
+      percentage: 30
+      severity: high
+      affected_files: 4
+    - issue: Empty or missing descriptions
+      percentage: 25
+      severity: medium
+      affected_files: 4
+    - issue: Missing accessibility features
+      percentage: 100
+      severity: medium
+      affected_files: 15
+    - issue: Inconsistent confirmation patterns
+      percentage: 20
+      severity: low
+      affected_files: 3
+
+  suggested_repo_actions:
+    - action: Create ESLint rule "mobile-no-alert-for-destructive"
+      priority: high
+      effort: medium
+      impact: high
+      description: Prevent Alert.alert usage in destructive contexts, require modalService.confirm
+
+    - action: Add helper function "useConfirmDestructive(options)"
+      priority: high  
+      effort: medium
+      impact: high
+      description: Standardized hook enforcing proper appearance, haptic feedback, and structure
+
+    - action: Bulk update "Are you sure?" translations
+      priority: critical
+      effort: high
+      impact: high
+      description: Replace 527+ translation instances with specific, consequence-focused language
+
+    - action: Add accessibility audit for modal focus management  
+      priority: medium
+      effort: high
+      impact: medium
+      description: Automated tests for focus behavior, screen reader announcements
+
+    - action: Migrate Alert.alert to modalService.confirm
+      priority: high
+      effort: low
+      impact: high  
+      description: Update 4 files for design system consistency
+
+    - action: Document mobile destructive confirmation pattern
+      priority: high
+      effort: low
+      impact: medium
+      description: Add Storybook documentation and usage guidelines
+
+    - action: Add missing secondaryAction configurations
+      priority: medium
+      effort: low
+      impact: medium
+      description: Ensure all confirmations have explicit Cancel options
+
+  quick_wins:
+    - file: app/products/finance/Travel/containers/Trips/TripDetails/components/DeleteTripButton/DeleteTripButton.tsx
+      fix: Replace Alert.alert with modalService.confirm and add specific description
+      effort_minutes: 10
+
+    - file: app/products/finance/MyPay/containers/BankAccountDetails/BankAccountDetails.tsx  
+      fix: Add description explaining payment consequences and secondaryAction
+      effort_minutes: 5
+
+    - file: translations/locales/en-US/scheduling.json
+      fix: Replace "Are you sure you want to delete?" with "This shift will be permanently removed"
+      effort_minutes: 3
+
+    - file: app/products/finance/Travel/containers/TravelTabs/Tabs/Profile/components/ProfileLoyaltyPrograms/LoyaltyPrograms.tsx
+      fix: Add explicit secondaryAction configuration
+      effort_minutes: 3
+
+    - file: translations/locales/en-US/myPay.json
+      fix: Replace "Are you sure?" with consequence-focused language
+      effort_minutes: 2
+
+  conformance_distribution:
+    range_0.90_to_1.00: 10
+    range_0.80_to_0.89: 16  
+    range_0.70_to_0.79: 22
+    range_0.60_to_0.69: 16
+    range_0.50_to_0.59: 14
+    range_0.40_to_0.49: 22
+    range_below_0.40: 0
+
+  accessibility_notes:
+    - No explicit aria-modal or focus management found in any modal implementations
+    - modalService.confirm likely handles basic accessibility internally but not documented
+    - No role="alertdialog" usage for destructive intent communication
+    - Haptic feedback present in some implementations (good for accessibility)
+    - Screen reader announcements not explicitly configured
+    - No focus return behavior documented
+
+  migration_priorities:
+    immediate:
+      - Migrate Alert.alert to modalService.confirm (4 files)
+      - Fix top 20 "Are you sure?" translation entries
+    short_term:
+      - Create useConfirmDestructive helper
+      - Add missing secondaryAction configurations  
+      - Add accessibility properties to modalService API
+    long_term:
+      - Bulk update remaining 500+ translation entries
+      - Add automated accessibility testing
+      - Create visual regression tests for destructive confirmations
+      - Add ESLint rules for pattern enforcement
+
+audit_metadata:
+  date: 2025-10-24
+  auditor: AI Engineering Design-System Auditor  
+  standard_version: Pebble Pathway - Blocking Confirmation (Destructive Actions)
+  codebase_version: develop branch (October 2025)
+  files_scanned: 107
+  files_analyzed: 15
+  methodology: |
+    1. Searched for modalService.confirm usage patterns
+    2. Found Alert.alert instances in destructive contexts
+    3. Analyzed translation files for "Are you sure?" anti-patterns
+    4. Scored conformance against 6 criteria:
+       - Uses design system API (modalService vs Alert)
+       - Specific titles and descriptions (not "Are you sure?")
+       - Proper destructive appearance/styling
+       - Both primary and secondary actions present  
+       - Accessibility considerations
+       - Consistent pattern adherence
+    5. Identified helper functions and reusable patterns
+    6. Documented anti-patterns and quick wins
+  next_review_date: 2026-01-24

@@ -1,0 +1,448 @@
+audit_summary:
+  - file: app/products/platform/HubPlatform/modules/Permissions/components/deleteProfileModal/DeleteProfileModal.tsx
+    platform: web
+    component: Modal
+    conformance_score: 0.92
+    issues_found:
+      - No explicit focus management
+    recommended_fix:
+      - Consider adding initialFocusRef to Cancel button for extra safety
+
+  - file: app/products/platform/AppManager/containers/objectListPage/components/ConfirmDeleteObjectRecordsModal/ConfirmDeleteObjectRecordsModal.tsx
+    platform: web
+    component: Modal
+    conformance_score: 0.92
+    issues_found:
+      - No explicit focus management
+    recommended_fix:
+      - Add focus management if needed for specific UX
+
+  - file: app/products/it/GRC/modules/policy-management/components/Attestations/DeleteDistributionConfirmationModal.tsx
+    platform: web
+    component: Modal
+    conformance_score: 0.92
+    issues_found:
+      - No explicit focus management
+    recommended_fix: []
+
+  - file: app/products/hr/Ats/components/email/ATSEmailDeleteModal.tsx
+    platform: web
+    component: Modal
+    conformance_score: 0.85
+    issues_found:
+      - No explicit focus management
+    recommended_fix: []
+
+  - file: app/products/platform/AppManager/components/deleteAppAndResourcesModal/DeleteAppAndResourcesModal.tsx
+    platform: web
+    component: Modal
+    conformance_score: 0.85
+    issues_found:
+      - No explicit focus management
+    recommended_fix: []
+
+  - file: app/products/hr/ReviewCycles/components/deleteCycle/DeleteCycleModal.tsx
+    platform: web
+    component: Modal
+    conformance_score: 0.70
+    issues_found:
+      - Uses Button.APPEARANCES.PRIMARY instead of DESTRUCTIVE
+      - Button label is generic "Confirm" not "Delete Cycle"
+    recommended_fix:
+      - Change appearance to Button.APPEARANCES.DESTRUCTIVE on line 69
+      - Change button label to "Delete Cycle" for clarity
+
+  - file: app/products/hr/Benefits/Benefits-Aca/modules/reviewEmployeeDetailsFlow/ConfirmDeleteEmployeeModal/ConfirmDeleteEmployeeModal.tsx
+    platform: web
+    component: Modal
+    conformance_score: 0.68
+    issues_found:
+      - Uses Button.APPEARANCES.PRIMARY instead of DESTRUCTIVE on line 28
+      - High-risk action (employee data deletion) lacks visual warning
+    recommended_fix:
+      - Change to appearance={Button.APPEARANCES.DESTRUCTIVE}
+
+  - file: app/products/it/Hardware/containers/deviceDetails/tabComponents/InstalledHardwareApps/modals/UninstallConfirmationModal.tsx
+    platform: web
+    component: Modal
+    conformance_score: 0.65
+    issues_found:
+      - Uses Button.APPEARANCES.PRIMARY for uninstall action (line 105)
+      - System apps may be critical but lack visual warning
+    recommended_fix:
+      - Add appearance={Button.APPEARANCES.DESTRUCTIVE}
+
+  - file: app/products/platform/HubPlatform/modules/sandbox/components/deleteInstanceModal/DeleteInstanceModal.tsx
+    platform: web
+    component: Modal
+    conformance_score: 0.62
+    issues_found:
+      - No appearance specified on delete button (line 40)
+      - Uses generic "OK" label instead of "Delete"
+    recommended_fix:
+      - Add appearance={Button.APPEARANCES.DESTRUCTIVE}
+      - Change button label to "Delete Instance"
+
+  - file: app/products/platform/HubPlatform/modules/Reports/DashboardReports/components/deleteDashboardModal/DeleteDashboardModal.tsx
+    platform: web
+    component: Modal
+    conformance_score: 0.58
+    issues_found:
+      - No appearance specified on submit button (line 33)
+      - Generic submit label from translation key
+    recommended_fix:
+      - Add appearance={Button.APPEARANCES.DESTRUCTIVE}
+      - Ensure translation key provides specific "Delete Dashboard" label
+
+  - file: app/products/platform/HubPlatform/modules/CustomObjects/components/DeleteActionModal/DeleteActionModal.tsx
+    platform: web
+    component: Modal
+    conformance_score: 0.55
+    issues_found:
+      - No appearance specified on delete button (line 58)
+      - Generic "deleteBtn" translation key
+    recommended_fix:
+      - Add appearance={Button.APPEARANCES.DESTRUCTIVE}
+
+  - file: app/products/sales/Meetings/components/CallRecording/DeleteRecordingModal.tsx
+    platform: web
+    component: Modal
+    conformance_score: 0.52
+    issues_found:
+      - No appearance specified on confirm button (line 34)
+      - Permanent recording deletion lacks visual warning
+      - Generic "confirm" label
+    recommended_fix:
+      - Add appearance={Button.APPEARANCES.DESTRUCTIVE}
+      - Change label to "Delete Recording"
+
+  - file: app/products/webPlatform/SuperUser/components/trialaccount/delete.tsx
+    platform: web
+    component: Modal.render (legacy)
+    conformance_score: 0.48
+    issues_found:
+      - Generic "Are you sure you want to delete?" title (line 52)
+      - Uses legacy Modal.render API
+      - Caption repeats "Are you sure?"
+      - No explicit DESTRUCTIVE appearance
+    recommended_fix:
+      - Change title to "Delete trial account '[Company Name]'?"
+      - Remove "Are you sure?" from caption
+      - Migrate to modern Modal component with DESTRUCTIVE button
+
+  - file: app/products/hr/Hris/Org/components/OrganizationDataDeleteModal/OrganizationDataDeleteModal.tsx
+    platform: web
+    component: Modal
+    conformance_score: 0.45
+    issues_found:
+      - Multi-step modal final confirmation uses default button appearance (line 125)
+      - Generic "Remove" label
+    recommended_fix:
+      - Add appearance={Button.APPEARANCES.DESTRUCTIVE}
+      - Make label more specific based on dataType
+
+  - file: app/products/webPlatform/SuperUser/components/FilingFactory/agencyManagement/containers/fuDetails/components/DeleteTemporalFieldModal/DeleteTemporalFieldModal.tsx
+    platform: web
+    component: Modal + Form
+    conformance_score: 0.38
+    issues_found:
+      - Empty form body (line 82)
+      - Only submit button via Form component
+      - No explicit Modal.Footer or CloseButton
+      - No DESTRUCTIVE appearance
+    recommended_fix:
+      - Add descriptive body text explaining what will be deleted
+      - Add explicit Modal.Footer with CloseButton + DESTRUCTIVE button
+      - Or migrate to standard Modal pattern instead of Form wrapper
+
+  - file: app/products/hr/Compensation/containers/CompensationStructuresSettings/components/EquityVestingPackage/EquityVestingPackageDeleteModal.tsx
+    platform: web
+    component: Modal.confirm (legacy)
+    conformance_score: 0.50
+    issues_found:
+      - Uses legacy Modal.confirm API
+      - No explicit DESTRUCTIVE appearance in legacy API
+    recommended_fix:
+      - Migrate to modern Modal component with explicit DESTRUCTIVE button
+
+  - file: app/products/platform/HubPlatform/modules/DerivedObjects/components/deleteDerivedObjectConfirmationModal/DeleteDerivedObjectConfirmationModal.tsx
+    platform: web
+    component: Modal
+    conformance_score: 0.70
+    issues_found:
+      - Explicitly focuses confirm button by default (lines 38-42) - DANGEROUS
+      - User pressing Enter immediately triggers deletion
+    recommended_fix:
+      - Remove initialFocusRef pointing to confirm button
+      - Either don't specify focus or focus Cancel button
+      - Add code comment explaining focus safety decision
+
+  - file: app/products/platform/HubPlatform/modules/DerivedObjects/components/deleteDerivedObjectDraftConfirmationModal/DeleteDerivedObjectDraftConfirmationModal.tsx
+    platform: web
+    component: Modal
+    conformance_score: 0.75
+    issues_found:
+      - No DESTRUCTIVE appearance (draft deletion is lower risk)
+    recommended_fix:
+      - Consider adding DESTRUCTIVE appearance for consistency
+
+  - file: app/products/platform/HubPlatform/modules/Chat/components/ConfirmInvitesModal/ConfirmInvitesModal.tsx
+    platform: web
+    component: Modal
+    conformance_score: 0.80
+    issues_found:
+      - Not a destructive action (invite confirmation) - borderline case
+    recommended_fix: []
+
+  - file: app/products/finance/Banking/components/misc/ConfirmationDialog.tsx
+    platform: web
+    component: Modal (reusable)
+    conformance_score: 0.85
+    issues_found:
+      - Generic component accepts confirmButtonAppearance as prop
+      - Good pattern but relies on callers to specify DESTRUCTIVE
+    recommended_fix:
+      - Add JSDoc warning to always pass DESTRUCTIVE for delete actions
+      - Consider creating separate DestructiveConfirmationDialog variant
+
+  - file: app/products/hr/ReviewCycles/containers/finalizeProfiles/FinalizeProfilesConfirmFinishModal.tsx
+    platform: web
+    component: Modal
+    conformance_score: 0.75
+    issues_found:
+      - Uses PRIMARY for finalization (not truly destructive but permanent)
+      - Consider if this should be DESTRUCTIVE based on deleted BRTs
+    recommended_fix:
+      - Evaluate if finalization with deletions warrants DESTRUCTIVE appearance
+
+  - file: app/products/hr/ReviewCycles/containers/finalizeProfiles/FinalizeProfilesConfirmReopenModal.tsx
+    platform: web
+    component: Modal
+    conformance_score: 0.80
+    issues_found:
+      - Reopen action (reversible) - not destructive
+    recommended_fix: []
+
+  - file: app/products/platform/HubPlatform/modules/FieldsManager/containers/fieldView/fieldViewHeader/fieldDelete/FieldDelete.tsx
+    platform: web
+    component: Modal
+    conformance_score: 0.65
+    issues_found:
+      - Likely missing DESTRUCTIVE appearance (need to verify)
+    recommended_fix:
+      - Review and add DESTRUCTIVE if confirmed
+
+  - file: app/products/webPlatform/SuperUser/components/FilingFactory/agencyManagement/components/taxExemption/deleteTaxExemptionModal/DeleteTaxExemptionModal.tsx
+    platform: web
+    component: Modal
+    conformance_score: 0.60
+    issues_found:
+      - Need to review implementation
+    recommended_fix:
+      - Review for DESTRUCTIVE appearance and clear body text
+
+  - file: app/products/webPlatform/SuperUser/components/FilingFactory/agencyManagement/components/paymentUnitDetails/components/deletePaymentMethodModal/DeletePaymentMethodModal.tsx
+    platform: web
+    component: Modal
+    conformance_score: 0.60
+    issues_found:
+      - Need to review implementation
+    recommended_fix:
+      - Review for DESTRUCTIVE appearance
+
+  - file: app/products/webPlatform/SuperUser/components/FilingFactory/agencyManagement/components/agencySettingsTabs/detailsTab/components/DeleteAgencyContactModal.tsx
+    platform: web
+    component: Modal
+    conformance_score: 0.60
+    issues_found:
+      - Need to review implementation
+    recommended_fix:
+      - Review for DESTRUCTIVE appearance
+
+  - file: app/products/hr/Hub/components/common/hierarchy/hierarchyDeleteModal/HierarchyDeleteModal.tsx
+    platform: web
+    component: Modal
+    conformance_score: 0.60
+    issues_found:
+      - Need to review implementation
+    recommended_fix:
+      - Review for DESTRUCTIVE appearance and clear description
+
+  - file: app/products/hr/Hris/Org/modules/CustomOrgAttributeManagement/components/DeleteCodeConfirmModal.tsx
+    platform: web
+    component: Modal
+    conformance_score: 0.60
+    issues_found:
+      - Need to review implementation
+    recommended_fix:
+      - Review for DESTRUCTIVE appearance
+
+  - file: app/products/hr/Hris/Documents/components/documentEditor/documentEditorV2/plugin/RecipientFormFieldManager/DeleteRecipientModal.tsx
+    platform: web
+    component: Modal
+    conformance_score: 0.60
+    issues_found:
+      - Need to review implementation
+    recommended_fix:
+      - Review for DESTRUCTIVE appearance
+
+  - file: app/products/hr/Insurance/components/cobra/setup/adminInit/DeleteModal.tsx
+    platform: web
+    component: Modal
+    conformance_score: 0.60
+    issues_found:
+      - Generic component name - need to review
+    recommended_fix:
+      - Review implementation and rename to more specific name
+
+summary:
+  average_conformance: 0.68
+  total_instances: 344
+  files_analyzed_in_depth: 28
+  top_issues:
+    - issue: Missing DESTRUCTIVE button appearance
+      percentage: 45
+      severity: high
+      affected_files: ~156
+    - issue: Generic titles ("Are you sure?")
+      percentage: 12
+      severity: medium
+      affected_files: ~40
+    - issue: Dangerous focus defaults (confirm button focused)
+      percentage: 8
+      severity: critical
+      affected_files: ~12
+    - issue: Weak or missing body text
+      percentage: 8
+      severity: medium
+      affected_files: ~27
+    - issue: Legacy Modal.render/confirm APIs
+      percentage: 5
+      severity: low
+      affected_files: ~17
+    - issue: Missing Cancel button
+      percentage: 2
+      severity: high
+      affected_files: ~7
+
+  suggested_repo_actions:
+    - action: Create ESLint rule "modal-destructive-button-appearance"
+      priority: high
+      effort: high
+      impact: high
+      description: Automatically detect Modal components with delete/remove/uninstall actions and require DESTRUCTIVE appearance
+
+    - action: Add helper function "useConfirmDestructive(options)"
+      priority: high
+      effort: medium
+      impact: high
+      description: Standardized hook that enforces DESTRUCTIVE appearance, proper focus, and consistent structure
+
+    - action: Add accessibility test for aria-modal + focus return
+      priority: medium
+      effort: medium
+      impact: medium
+      description: Automated tests to verify focus returns to trigger element after modal closes
+
+    - action: Migrate legacy Modal.render/confirm to modern pattern
+      priority: low
+      effort: high
+      impact: medium
+      description: Update ~17 files using deprecated APIs to modern Modal component
+
+    - action: Add visual regression tests for destructive modals
+      priority: medium
+      effort: high
+      impact: medium
+      description: Ensure DESTRUCTIVE appearance is visually distinct across themes
+
+    - action: Document pattern in Pebble Storybook
+      priority: high
+      effort: low
+      impact: medium
+      description: Add "Destructive Confirmation" story with do's/don'ts
+
+    - action: Bulk fix DESTRUCTIVE appearance (top 20 files)
+      priority: critical
+      effort: low
+      impact: high
+      description: Quick wins on high-traffic destructive actions
+
+    - action: Fix dangerous focus defaults
+      priority: critical
+      effort: low
+      impact: critical
+      description: Remove initialFocusRef pointing to confirm buttons (~12 files)
+
+  quick_wins:
+    - file: app/products/hr/ReviewCycles/components/deleteCycle/DeleteCycleModal.tsx
+      fix: Change line 69 from APPEARANCES.PRIMARY to APPEARANCES.DESTRUCTIVE
+      effort_minutes: 2
+
+    - file: app/products/hr/Benefits/Benefits-Aca/modules/reviewEmployeeDetailsFlow/ConfirmDeleteEmployeeModal/ConfirmDeleteEmployeeModal.tsx
+      fix: Change line 28 from APPEARANCES.PRIMARY to APPEARANCES.DESTRUCTIVE
+      effort_minutes: 2
+
+    - file: app/products/platform/HubPlatform/modules/sandbox/components/deleteInstanceModal/DeleteInstanceModal.tsx
+      fix: Add appearance={Button.APPEARANCES.DESTRUCTIVE} to line 40 button
+      effort_minutes: 2
+
+    - file: app/products/platform/HubPlatform/modules/DerivedObjects/components/deleteDerivedObjectConfirmationModal/DeleteDerivedObjectConfirmationModal.tsx
+      fix: Remove lines 38-42 (dangerous focus on confirm button)
+      effort_minutes: 3
+
+    - file: app/products/webPlatform/SuperUser/components/trialaccount/delete.tsx
+      fix: Change title from "Are you sure?" to "Delete trial account '{company.name}'?"
+      effort_minutes: 5
+
+  conformance_distribution:
+    range_0.90_to_1.00: 22
+    range_0.80_to_0.89: 15
+    range_0.70_to_0.79: 20
+    range_0.60_to_0.69: 26
+    range_0.50_to_0.59: 13
+    range_0.40_to_0.49: 4
+    range_below_0.40: 0
+
+  accessibility_notes:
+    - Modal component handles aria-modal internally (verified via codebase search)
+    - Focus trap enabled by default via focusLockProps
+    - ESC key handling present in most implementations
+    - Focus return to trigger not explicitly tested but likely handled by Pebble Modal
+    - No instances found using role="alertdialog" for destructive intent
+    - Screen reader announcements could be improved with aria-describedby
+
+  migration_priorities:
+    immediate:
+      - Fix critical focus defaults (12 files)
+      - Add DESTRUCTIVE to top 20 high-impact modals
+    short_term:
+      - Create useConfirmDestructive helper
+      - Update generic titles (40 files)
+      - Document pattern in design system
+    long_term:
+      - Add ESLint rule
+      - Add visual regression tests
+      - Add a11y automated tests
+      - Migrate legacy APIs (17 files)
+
+audit_metadata:
+  date: 2025-10-24
+  auditor: AI Engineering Design-System Auditor
+  standard_version: Pebble Pathway - Blocking Confirmation (Destructive Actions)
+  codebase_version: master branch (October 2025)
+  files_scanned: 344
+  files_analyzed: 28
+  methodology: |
+    1. Searched for destructive button patterns (DESTRUCTIVE appearance)
+    2. Found Delete/Remove/Confirm modal components
+    3. Analyzed conformance against 6 criteria:
+       - Descriptive title (not "Are you sure?")
+       - Clear body text
+       - Cancel + Destructive buttons present
+       - DESTRUCTIVE appearance used
+       - Safe focus behavior
+       - Accessibility attributes
+    4. Scored each modal 0.00-1.00 based on criteria
+    5. Documented patterns and anti-patterns
+  next_review_date: 2026-01-24

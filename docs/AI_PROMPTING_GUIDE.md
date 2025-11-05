@@ -383,6 +383,13 @@ const MyDemo = () => {
 
 // Don't forget isVisible for modals
 <Modal onCancel={() => {}} title="Title">
+
+// Don't use Row/Cell for TableBasic
+<TableBasic>
+  <TableBasic.Row isHeader>
+    <TableBasic.Cell>Name</TableBasic.Cell>
+  </TableBasic.Row>
+</TableBasic>
 ```
 
 ### ✅ Correct
@@ -405,6 +412,20 @@ const MyDemo = () => {
   onCancel={() => setIsOpen(false)} 
   title="Title"
 >
+
+// Use THead/TBody/Tr/Th/Td for TableBasic
+<TableBasic>
+  <TableBasic.THead>
+    <TableBasic.Tr>
+      <TableBasic.Th>Name</TableBasic.Th>
+    </TableBasic.Tr>
+  </TableBasic.THead>
+  <TableBasic.TBody>
+    <TableBasic.Tr>
+      <TableBasic.Td>John Doe</TableBasic.Td>
+    </TableBasic.Tr>
+  </TableBasic.TBody>
+</TableBasic>
 ```
 
 ## Accessibility
@@ -435,4 +456,5 @@ Always include:
 - See [COMPONENT_CATALOG.md](./COMPONENT_CATALOG.md) for complete component list
 - Check [../src/demos/](../src/demos/) for working examples
 - Review [../.cursorrules](../.cursorrules) for coding standards
+
 

@@ -1,0 +1,100 @@
+pathways:
+  - id: blocking-confirmation-destructive
+    name: Blocking Confirmation (Destructive Actions)
+    web_component: Modal + Button (Primary / Destructive)
+    mobile_component: modalService.confirm()
+    when_to_use: "Irreversible or destructive actions (delete, revoke, cancel)."
+    when_not_to_use: "Reversible or low-impact actions (use Snackbar)."
+    priority: 1
+    rationale: "Most frequent destructive flow; clarity and confirmation build trust."
+    confidence: 0.95
+
+  - id: inline-form-validation
+    name: Inline Form Validation
+    web_component: Form.Input.Text + HelperText
+    mobile_component: FormField + HelperText
+    when_to_use: "Field-level validation errors or format enforcement."
+    when_not_to_use: "Global form errors or system-level messages."
+    priority: 2
+    rationale: "High-frequency friction point; visible and fixable consistency issue."
+    confidence: 0.90
+
+  - id: transient-success-feedback
+    name: Transient Success Feedback (≤5s)
+    web_component: SnackBar.success()
+    mobile_component: snackBarService.show()
+    when_to_use: "Quick confirmations after save, submit, or copy actions."
+    when_not_to_use: "Critical errors or persistent information."
+    priority: 3
+    rationale: "Creates perceived speed and clear feedback loops."
+    confidence: 0.88
+
+  - id: button-hierarchy
+    name: Button Hierarchy (Primary / Secondary / Destructive)
+    web_component: Button (appearance: PRIMARY / OUTLINE / DESTRUCTIVE)
+    mobile_component: Button (appearance: primary / inverse / destructive)
+    when_to_use: "Action hierarchies where users must distinguish importance."
+    when_not_to_use: "Single-action contexts."
+    priority: 4
+    rationale: "Establishes visual consistency and reduces user confusion."
+    confidence: 0.92
+
+  - id: empty-state-primary-cta
+    name: Empty State with Primary CTA
+    web_component: EmptyState + Button
+    mobile_component: EmptyState (primaryAction)
+    when_to_use: "Zero-data states prompting first creation or setup."
+    when_not_to_use: "Loading or error states."
+    priority: 5
+    rationale: "Shapes first impressions; clarifies next step in user journey."
+    confidence: 0.89
+
+  - id: page-level-banner-notice
+    name: Page-Level Banner / Notice
+    web_component: Notice / Banner
+    mobile_component: Notice (persistent)
+    when_to_use: "Persistent page-level information or warnings."
+    when_not_to_use: "Transient feedback or blocking issues."
+    priority: 6
+    rationale: "Communicates non-blocking state changes clearly."
+    confidence: 0.87
+
+  - id: loading-skeletons
+    name: Loading Skeletons / Placeholders
+    web_component: Skeleton
+    mobile_component: "None (standardization opportunity)"
+    when_to_use: "While loading async data; placeholder for content."
+    when_not_to_use: "Fast-loading or error states."
+    priority: 7
+    rationale: "Improves perceived performance and modern polish."
+    confidence: 0.85
+
+  - id: tabbed-stepper-navigation
+    name: Tabbed / Stepper Navigation
+    web_component: Tabs, Stepper, Breadcrumbs
+    mobile_component: FlatList Tabs, Stepper (onboarding)
+    when_to_use: "Organize content sections or steps in workflows."
+    when_not_to_use: "Flat single-page flows."
+    priority: 8
+    rationale: "Increases sense of orientation and control."
+    confidence: 0.84
+
+  - id: side-drawer-sheet
+    name: Side Drawer / Sheet (Non-blocking Edit)
+    web_component: Drawer
+    mobile_component: Modal (variant = Sheet)
+    when_to_use: "Edit or detail views without leaving parent context."
+    when_not_to_use: "Critical blocking flows."
+    priority: 9
+    rationale: "Supports multi-tasking and reduces navigation cost."
+    confidence: 0.86
+
+  - id: data-table-selection-bulk-actions
+    name: Data Table / List Selection + Bulk Actions
+    web_component: DataGrid + SelectionToolbar
+    mobile_component: FlatList + SelectionControls
+    when_to_use: "Multi-select workflows (approve, delete, export)."
+    when_not_to_use: "Single-item actions."
+    priority: 10
+    rationale: "Enables efficiency and alignment in high-volume enterprise tasks."
+    confidence: 0.83

@@ -1,6 +1,22 @@
 # Pebble Component Catalog
 
-Complete reference for all Pebble components with AI-friendly examples.
+**Quick reference for all Pebble components with AI-friendly examples.**
+
+> **🎯 For comprehensive docs:** See [`guides/components/`](./guides/components/) for full usage guides synced from RDS Confluence space.
+>
+> **🎨 For design tokens:** See [`TOKEN_CATALOG.md`](./TOKEN_CATALOG.md) for colors, typography, spacing, etc.
+>
+> **🤖 For AI patterns:** See [`AI_PROMPTING_GUIDE.md`](./AI_PROMPTING_GUIDE.md) for usage patterns.
+
+## ⚠️ Common Gotchas
+
+1. **Icon sizes are numbers, not enums:** Use `size={20}`, NOT `size={Icon.SIZES.M}`
+2. **Input.Text.SIZES, not Input.SIZES:** Use `Input.Text.SIZES.M`, NOT `Input.SIZES.M`
+3. **Tip, not Tooltip:** In Pebble, the component is called `Tip` (import from `@rippling/pebble/Tip`)
+4. **Card.Layout for containers, not Card directly:** Use `<Card.Layout>`, NOT `<Card>`. There's no `Card.ELEVATIONS` prop.
+5. **TableBasic uses Tr/Th/Td, not Row/Cell:** Use `<TableBasic.Tr>`, `<TableBasic.Th>`, `<TableBasic.Td>`, NOT `TableBasic.Row` or `TableBasic.Cell`. Must wrap in `<TableBasic.THead>` and `<TableBasic.TBody>`.
+6. **Always use theme tokens:** Use `theme.colorPrimary`, NOT `"#7a005d"`
+7. **Use leftIconType for Dropdown/Select icons:** Don't create custom React elements as labels - use the `leftIconType` prop instead
 
 ## Table of Contents
 
@@ -18,17 +34,31 @@ Complete reference for all Pebble components with AI-friendly examples.
 ### Button
 
 **Purpose:** Primary action trigger  
-**Import:** `import Button from '@rippling/pebble/Button';`
+**Import:** `import Button from '@rippling/pebble/Button';`  
+**Usage Guide:** [guides/components/buttons/button.md](./guides/components/buttons/button.md)
 
-**Props:**
-- `size`: `XS | S | M | L`
-- `appearance`: `PRIMARY | ACCENT | DESTRUCTIVE | SUCCESS | OUTLINE | GHOST`
-- `onClick`: `() => void`
-- `disabled`: `boolean`
-- `isLoading`: `boolean`
+**Button Props:**
+- `size`: `Button.SIZES.XS | S | M | L` - Button size
+- `appearance`: `Button.APPEARANCES.PRIMARY | ACCENT | DESTRUCTIVE | SUCCESS | OUTLINE | GHOST` - Visual style
+- `onClick`: `(e: React.MouseEvent) => void` - Click handler
+- `disabled`: `boolean` - Disable the button
+- `isLoading`: `boolean` - Show loading spinner
+- `type`: `'button' | 'submit' | 'reset'` - HTML button type (default: 'button')
+- `isFullWidth`: `boolean` - Stretch to container width
+- `children`: `ReactNode` - Button content
+
+**Button.Icon Props:**
+- `icon`: `Icon.TYPES.*` - Icon to display (required)
+- `aria-label`: `string` - Accessibility label (required)
+- `size`: `Button.SIZES.XS | S | M | L` - Button size
+- `appearance`: Same as Button - Visual style
+- `onClick`: `(e: React.MouseEvent) => void` - Click handler
+- `disabled`: `boolean` - Disable the button
+- `tip`: `string` - Tooltip text on hover
 
 **Example:**
 ```typescript
+// Basic button
 <Button 
   size={Button.SIZES.M}
   appearance={Button.APPEARANCES.PRIMARY}
@@ -36,24 +66,15 @@ Complete reference for all Pebble components with AI-friendly examples.
 >
   Save Changes
 </Button>
-```
 
-**Variants:**
-```typescript
-// Icon Button
+// Icon button
 <Button.Icon
   icon={Icon.TYPES.SETTINGS_OUTLINE}
   aria-label="Settings"
+  tip="Open settings"
   size={Button.SIZES.M}
-  onClick={() => {}}
+  appearance={Button.APPEARANCES.GHOST}
 />
-
-// Button Group
-<Button.Group>
-  <Button>Left</Button>
-  <Button>Middle</Button>
-  <Button>Right</Button>
-</Button.Group>
 ```
 
 ---
@@ -61,21 +82,41 @@ Complete reference for all Pebble components with AI-friendly examples.
 ### Dropdown
 
 **Purpose:** Menu of actions/options  
-**Import:** `import Dropdown from '@rippling/pebble/Dropdown';`
+**Import:** `import Dropdown from '@rippling/pebble/Dropdown';`  
+**Usage Guide:** [guides/components/dropdown-menu.md](./guides/components/dropdown-menu.md)
 
-**Props:**
-- `list`: `Array<{ label: string, value: any }>`
-- `onChange`: `(value: any) => void`
-- `shouldAutoClose`: `boolean`
-- `placement`: `'bottom-start' | 'bottom-end' | 'top-start' | 'top-end'`
+**Dropdown Props:**
+- `list`: `ListItem[]` - Array of menu items (required)
+- `onChange`: `(value: any) => void` - Callback when item selected (required)
+- `shouldAutoClose`: `boolean` - Close menu after selection
+- `placement`: `'bottom-start' | 'bottom-end' | 'top-start' | 'top-end'` - Menu position
+- `children`: `ReactNode` - Trigger element (usually a Button)
+
+**ListItem Props:**
+- `label`: `string` - Display text (required)
+- `value`: `any` - Item value (required)
+- `leftIconType`: `Icon.TYPES.*` - ✅ **Icon displayed on left side**
+- `avatarProps`: `object` - Avatar displayed on left side
+- `avatarImage`: `string` - Avatar image URL
+- `flag`: `string` - Country flag code (displays flag on left)
+- `isDisabled`: `boolean` - Disable this menu item
+- `isSelected`: `boolean` - Show selected state
 
 **Example:**
 ```typescript
+// ✅ Correct: Use leftIconType for icons
 <Dropdown
   list={[
-    { label: 'Edit', value: 'edit' },
-    { label: 'Duplicate', value: 'duplicate' },
-    { label: 'Delete', value: 'delete' },
+    { 
+      label: 'Edit', 
+      leftIconType: Icon.TYPES.EDIT_OUTLINE, 
+      value: 'edit' 
+    },
+    { 
+      label: 'Delete', 
+      leftIconType: Icon.TYPES.DELETE_OUTLINE, 
+      value: 'delete' 
+    },
   ]}
   onChange={(value) => handleAction(value)}
   shouldAutoClose
@@ -84,6 +125,14 @@ Complete reference for all Pebble components with AI-friendly examples.
     Actions
   </Button>
 </Dropdown>
+
+// ❌ Wrong: Don't create custom React elements
+list={[
+  { 
+    label: <div><Icon /> Edit</div>,  // Don't do this!
+    value: 'edit' 
+  }
+]}
 ```
 
 ---
@@ -93,23 +142,36 @@ Complete reference for all Pebble components with AI-friendly examples.
 ### Input.Text
 
 **Purpose:** Single-line text input  
-**Import:** `import Input from '@rippling/pebble/Inputs';`
+**Import:** `import Input from '@rippling/pebble/Inputs';`  
+**Usage Guide:** [guides/components/inputs/text-input.md](./guides/components/inputs/text-input.md)
 
-**Props:**
-- `id`: `string` (required)
-- `label`: `string`
-- `value`: `string`
-- `onChange`: `(e: ChangeEvent) => void`
-- `placeholder`: `string`
-- `isRequired`: `boolean`
-- `isDisabled`: `boolean`
-- `errorMessage`: `string`
-- `size`: `XS | S | M | L`
+**Input.Text Props:**
+- `id`: `string` - Unique identifier (required)
+- `label`: `string` - Label text above input
+- `value`: `string` - Input value
+- `onChange`: `(e: ChangeEvent) => void` - Change handler
+- `placeholder`: `string` - Placeholder text
+- `isRequired`: `boolean` - Mark as required field
+- `isDisabled`: `boolean` - Disable the input
+- `isReadOnly`: `boolean` - Make input read-only
+- `errorMessage`: `string` - Error text below input
+- `helperText`: `string` - Helper text below input
+- `size`: `Input.Text.SIZES.XS | S | M | L` - Input size
+- `type`: `'text' | 'email' | 'password' | 'number' | 'tel' | 'url'` - HTML input type
+- `prefix`: `ReactNode` - Content before input (icon or text)
+- `suffix`: `ReactNode` - Content after input (icon or text)
+- `maxLength`: `number` - Maximum character length
+- `autoComplete`: `string` - HTML autocomplete attribute
+- `autoFocus`: `boolean` - Auto-focus on mount
+- `name`: `string` - Form input name
+- `onBlur`: `(e: FocusEvent) => void` - Blur handler
+- `onFocus`: `(e: FocusEvent) => void` - Focus handler
+
+**⚠️ CRITICAL: Use `Input.Text.SIZES.M`, NOT `Input.SIZES.M`**
 
 **Example:**
 ```typescript
-const [email, setEmail] = useState('');
-
+// Basic text input
 <Input.Text
   id="email"
   label="Email Address"
@@ -117,7 +179,15 @@ const [email, setEmail] = useState('');
   value={email}
   onChange={(e) => setEmail(e.target.value)}
   isRequired
-  errorMessage={emailError}
+  size={Input.Text.SIZES.M}
+/>
+
+// With icon prefix
+<Input.Text
+  id="search"
+  placeholder="Search..."
+  prefix={<Icon type={Icon.TYPES.SEARCH_OUTLINE} size={16} />}
+  size={Input.Text.SIZES.M}
 />
 ```
 
@@ -126,46 +196,44 @@ const [email, setEmail] = useState('');
 ### Select
 
 **Purpose:** Dropdown selection from a list  
-**Import:** `import Select from '@rippling/pebble/Inputs/Select';`
+**Import:** `import Select from '@rippling/pebble/Inputs/Select';`  
+**Usage Guide:** [guides/components/inputs/select.md](./guides/components/inputs/select.md)
 
-**Props:**
-- `id`: `string` (required)
-- `isRequired`: `boolean` (required)
-- `list`: `Array<{ label: string, value: any }>` (required)
-- `value`: `any`
-- `onChange`: `(value: any) => void`
-- `placeholder`: `string`
-- `isMulti`: `boolean`
-- `isSearchable`: `boolean`
-- `size`: `XS | S | M | L`
+**Select Props:**
+- `id`: `string` - Unique identifier (required)
+- `isRequired`: `boolean` - Mark as required field
+- `list`: `ListItem[]` - Array of options (required)
+- `value`: `any` - Selected value(s)
+- `onChange`: `(value: any) => void` - Selection callback
+- `placeholder`: `string` - Placeholder text
+- `isMulti`: `boolean` - Allow multiple selections
+- `isSearchable`: `boolean` - Enable search/filter
+- `isDisabled`: `boolean` - Disable the select
+- `size`: `Select.SIZES.XS | S | M | L` - Input size
+- `canClear`: `boolean` - Show clear button
+- `creatable`: `boolean` - Allow creating new options
+
+**ListItem Props (same as Dropdown):**
+- `label`: `string` - Display text (required)
+- `value`: `any` - Item value (required)
+- `leftIconType`: `Icon.TYPES.*` - ✅ **Icon displayed on left side**
+- `avatarProps`: `object` - Avatar displayed on left side
+- `avatarImage`: `string` - Avatar image URL
+- `flag`: `string` - Country flag code
+- `isDisabled`: `boolean` - Disable this option
 
 **Example:**
 ```typescript
-const [country, setCountry] = useState<string | undefined>(undefined);
-
 <Select
   id="country-select"
-  isRequired={false}
   placeholder="Select country"
   list={[
-    { label: 'United States', value: 'us' },
-    { label: 'Canada', value: 'ca' },
-    { label: 'Mexico', value: 'mx' },
+    { label: 'United States', value: 'us', flag: 'US' },
+    { label: 'Canada', value: 'ca', flag: 'CA' },
+    { label: 'Mexico', value: 'mx', flag: 'MX' },
   ]}
   value={country}
-  onChange={(value) => setCountry(value as string)}
-/>
-```
-
-**Multi-Select:**
-```typescript
-<Select
-  id="tags-select"
-  isRequired={false}
-  isMulti
-  list={tagOptions}
-  value={selectedTags}
-  onChange={(values) => setSelectedTags(values)}
+  onChange={(value) => setCountry(value)}
 />
 ```
 
@@ -174,12 +242,22 @@ const [country, setCountry] = useState<string | undefined>(undefined);
 ### Input.Checkbox
 
 **Purpose:** Boolean toggle option  
-**Import:** `import Input from '@rippling/pebble/Inputs';`
+**Import:** `import Input from '@rippling/pebble/Inputs';`  
+**Usage Guide:** [guides/components/inputs/checkbox.md](./guides/components/inputs/checkbox.md)
+
+**Input.Checkbox Props:**
+- `id`: `string` - Unique identifier (required)
+- `label`: `string | ReactNode` - Label text or content
+- `checked`: `boolean` - Checked state
+- `onChange`: `(e: ChangeEvent) => void` - Change handler
+- `isDisabled`: `boolean` - Disable the checkbox
+- `isIndeterminate`: `boolean` - Show indeterminate state (mixed)
+- `name`: `string` - Form input name
+- `helperText`: `string` - Helper text below checkbox
+- `errorMessage`: `string` - Error text below checkbox
 
 **Example:**
 ```typescript
-const [isChecked, setIsChecked] = useState(false);
-
 <Input.Checkbox
   id="terms"
   label="I agree to the terms and conditions"
@@ -193,7 +271,17 @@ const [isChecked, setIsChecked] = useState(false);
 ### Input.Switch
 
 **Purpose:** On/off toggle  
-**Import:** `import Input from '@rippling/pebble/Inputs';`
+**Import:** `import Input from '@rippling/pebble/Inputs';`  
+**Usage Guide:** [guides/components/inputs/segmented-control.md](./guides/components/inputs/segmented-control.md)
+
+**Input.Switch Props:**
+- `id`: `string` - Unique identifier (required)
+- `label`: `string | ReactNode` - Label text or content
+- `checked`: `boolean` - Checked/on state
+- `onChange`: `(e: ChangeEvent) => void` - Change handler
+- `isDisabled`: `boolean` - Disable the switch
+- `name`: `string` - Form input name
+- `helperText`: `string` - Helper text below switch
 
 **Example:**
 ```typescript
@@ -210,7 +298,21 @@ const [isChecked, setIsChecked] = useState(false);
 ### Input.Radio
 
 **Purpose:** Single selection from multiple options  
-**Import:** `import Input from '@rippling/pebble/Inputs';`
+**Import:** `import Input from '@rippling/pebble/Inputs';`  
+**Usage Guide:** [guides/components/inputs/radio.md](./guides/components/inputs/radio.md)
+
+**Input.RadioGroup Props:**
+- `name`: `string` - Radio group name (required)
+- `value`: `string` - Selected value
+- `onChange`: `(e: ChangeEvent) => void` - Change handler
+- `children`: `ReactNode` - Radio button children
+
+**Input.Radio Props:**
+- `id`: `string` - Unique identifier (required)
+- `value`: `string` - Radio value (required)
+- `label`: `string | ReactNode` - Label text or content
+- `isDisabled`: `boolean` - Disable this radio button
+- `helperText`: `string` - Helper text below radio
 
 **Example:**
 ```typescript
@@ -232,39 +334,41 @@ const [isChecked, setIsChecked] = useState(false);
 ### Modal
 
 **Purpose:** Focused dialog overlay  
-**Import:** `import Modal from '@rippling/pebble/Modal';`
+**Import:** `import Modal from '@rippling/pebble/Modal';`  
+**Usage Guide:** [guides/components/modal.md](./guides/components/modal.md)
 
-**Props:**
-- `isVisible`: `boolean` (required)
-- `onCancel`: `() => void` (required)
-- `title`: `string` (required)
-- `size`: `S | M | L | XL`
-- `shouldNotAnimate`: `boolean`
-- `overlayClassName`: `string`
+**Modal Props:**
+- `isVisible`: `boolean` - Show/hide modal (required)
+- `onCancel`: `() => void` - Close callback (required)
+- `title`: `string | ReactNode` - Modal title (required)
+- `size`: `Modal.SIZES.S | M | L | XL` - Modal width
+- `children`: `ReactNode` - Modal content
+- `shouldNotAnimate`: `boolean` - Disable animations
+- `shouldCloseOnOverlayClick`: `boolean` - Close when clicking backdrop
+- `shouldCloseOnEscape`: `boolean` - Close on ESC key
+- `overlayClassName`: `string` - Custom CSS class for overlay
+- `className`: `string` - Custom CSS class for modal
+
+**Modal Components:**
+- `Modal.Footer` - Footer section for actions
+- `Modal.CloseButton` - Pre-styled close button
 
 **Example:**
 ```typescript
-const [isOpen, setIsOpen] = useState(false);
-
 <Modal
   isVisible={isOpen}
   onCancel={() => setIsOpen(false)}
   title="Confirm Action"
-  size="M"
+  size={Modal.SIZES.M}
 >
-  <div style={{ padding: '1rem' }}>
-    <p>Are you sure you want to proceed?</p>
-  </div>
+  <p>Are you sure you want to proceed?</p>
   
-  <ModalFooter>
-    <ModalCloseButton>Cancel</ModalCloseButton>
-    <Button 
-      appearance={Button.APPEARANCES.PRIMARY}
-      onClick={handleConfirm}
-    >
+  <Modal.Footer>
+    <Modal.CloseButton>Cancel</Modal.CloseButton>
+    <Button appearance={Button.APPEARANCES.PRIMARY}>
       Confirm
     </Button>
-  </ModalFooter>
+  </Modal.Footer>
 </Modal>
 ```
 
@@ -273,7 +377,8 @@ const [isOpen, setIsOpen] = useState(false);
 ### Drawer
 
 **Purpose:** Side panel for forms/details  
-**Import:** `import Drawer from '@rippling/pebble/Drawer';`
+**Import:** `import Drawer from '@rippling/pebble/Drawer';`  
+**Usage Guide:** [guides/components/drawer.md](./guides/components/drawer.md)
 
 **Props:**
 - `isVisible`: `boolean` (required)
@@ -289,20 +394,15 @@ const [isOpen, setIsOpen] = useState(false);
   isVisible={isDrawerOpen}
   onCancel={() => setIsDrawerOpen(false)}
   title="User Details"
-  isCompact={false}
 >
-  <div style={{ padding: '1rem' }}>
-    <Input.Text
-      id="name"
-      label="Name"
-      value={name}
-      onChange={(e) => setName(e.target.value)}
-    />
-    {/* More form fields */}
-  </div>
+  <Input.Text
+    id="name"
+    label="Name"
+    value={name}
+    onChange={(e) => setName(e.target.value)}
+  />
   
   <Drawer.Footer>
-    <Drawer.CloseButton>Cancel</Drawer.CloseButton>
     <Button appearance={Button.APPEARANCES.PRIMARY}>
       Save
     </Button>
@@ -312,34 +412,99 @@ const [isOpen, setIsOpen] = useState(false);
 
 ---
 
-### Tooltip
+### Tip (not Tooltip)
 
 **Purpose:** Contextual information on hover  
-**Import:** `import Tooltip from '@rippling/pebble/Tooltip';`
+**Import:** `import Tip from '@rippling/pebble/Tip';`  
+**Usage Guide:** [guides/components/tooltip.md](./guides/components/tooltip.md)  
+**⚠️ CRITICAL:** In Pebble, this component is called `Tip`, not `Tooltip`
 
 **Example:**
 ```typescript
-<Tooltip content="This action cannot be undone" placement="top">
+<Tip content="This action cannot be undone" placement="top">
   <Button appearance={Button.APPEARANCES.DESTRUCTIVE}>
     Delete
   </Button>
-</Tooltip>
+</Tip>
 ```
 
 ---
 
 ## Layout Components
 
+### Card
+
+**Purpose:** Container for grouping related content with consistent styling  
+**Import:** `import Card from '@rippling/pebble/Card';`  
+**Usage Guide:** [guides/components/cards.md](./guides/components/cards.md)
+
+**⚠️ CRITICAL:** Card has multiple variants - use `Card.Layout` for container cards, `Card.Basic` for selectable cards, `Card.Location` for location-specific cards. Most common use case is `Card.Layout`.
+
+**Card.Layout Props:**
+- `padding`: `Card.Layout.PADDINGS.PX_0 | PX_8 | PX_16 | PX_24 | PX_32` - Internal padding (default: PX_24)
+- `onClick`: `() => void` - Makes card clickable
+- `theme`: `Card.Layout.THEMES.DEFAULT | SELECTABLE` - Visual theme (default: DEFAULT)
+- `children`: `ReactNode` - Card content
+
+**Available Variants:**
+- `Card.Layout` - Standard container card (most common)
+- `Card.Basic` - Selectable card with selection state
+- `Card.Location` - Location-specific card with specialized rendering
+- `Card.Group` - Groups multiple cards together
+- `Card.Loader` - Loading state placeholder
+
+**Example (Basic Container):**
+```typescript
+<Card.Layout padding={Card.Layout.PADDINGS.PX_24}>
+  <h2>Card Title</h2>
+  <p>Card content goes here</p>
+</Card.Layout>
+```
+
+**Example (Clickable Card):**
+```typescript
+<Card.Layout 
+  padding={Card.Layout.PADDINGS.PX_24}
+  onClick={() => navigate('/details')}
+>
+  <h2>Clickable Card</h2>
+  <p>Click anywhere on this card</p>
+</Card.Layout>
+```
+
+**Example (Grid of Cards):**
+```typescript
+<div style={{ 
+  display: 'grid', 
+  gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
+  gap: theme.space600 
+}}>
+  {items.map(item => (
+    <Card.Layout key={item.id} padding={Card.Layout.PADDINGS.PX_24}>
+      <h3>{item.title}</h3>
+      <p>{item.description}</p>
+    </Card.Layout>
+  ))}
+</div>
+```
+
+---
+
 ### Box
 
 **Purpose:** Flexible container with spacing/layout props  
 **Import:** `import Box from '@rippling/pebble/Layout/Box';`
 
-**Props:**
-- `padding`, `margin`: `string` (theme spacing tokens)
-- `display`: `'flex' | 'grid' | 'block' | 'inline-flex'`
-- `flexDirection`, `alignItems`, `justifyContent`: Flex props
-- `gap`: `string`
+**Box Props:**
+- `padding`, `margin`: `string` - Theme spacing tokens
+- `display`: `'flex' | 'grid' | 'block' | 'inline-flex'` - Display type
+- `direction`: `'row' | 'column'` - Flex direction
+- `alignItems`: `'center' | 'flex-start' | 'flex-end' | 'stretch'` - Cross-axis alignment
+- `justifyContent`: `'center' | 'space-between' | 'flex-start' | 'flex-end'` - Main-axis alignment
+- `gap`: `string` - Space between children
+- `borderRadius`: `string | object` - Border radius
+- `backgroundColor`: `string` - Background color (theme token)
+- `children`: `ReactNode` - Box content
 
 **Example:**
 ```typescript
@@ -353,6 +518,58 @@ const [isOpen, setIsOpen] = useState(false);
   <Typography variant="heading">Title</Typography>
   <Button>Action</Button>
 </Box>
+```
+
+---
+
+### HStack
+
+**Purpose:** Horizontal layout (flex row) with automatic spacing  
+**Import:** `import { HStack } from '@rippling/pebble/Layout/Stack';`
+
+**HStack Props:**
+- Inherits all Box props
+- Default `direction: 'row'` (horizontal)
+- Default `gap: '10px'`
+- `alignItems`: `'center' | 'flex-start' | 'flex-end'` - Vertical alignment
+- `justifyContent`: `'space-between' | 'center' | 'flex-start' | 'flex-end'` - Horizontal alignment
+- `gap`: `string` - Space between children
+- `padding`, `margin`: `string` - Theme spacing tokens
+
+**Example:**
+```typescript
+// Common pattern: Avatar + name + badge
+<HStack gap="1rem" alignItems="center">
+  <Avatar name="John Doe" size={Avatar.SIZES.S} />
+  <Typography>John Doe</Typography>
+  <Badge appearance={Badge.APPEARANCES.SUCCESS}>Admin</Badge>
+</HStack>
+```
+
+---
+
+### VStack
+
+**Purpose:** Vertical layout (flex column) with automatic spacing  
+**Import:** `import { VStack } from '@rippling/pebble/Layout/Stack';`
+
+**VStack Props:**
+- Inherits all Box props
+- Default `direction: 'column'` (vertical)
+- Default `gap: '10px'`
+- `alignItems`: `'center' | 'flex-start' | 'flex-end' | 'stretch'` - Horizontal alignment
+- `justifyContent`: `'center' | 'space-between' | 'flex-start'` - Vertical alignment
+- `gap`: `string` - Space between children
+- `padding`, `margin`: `string` - Theme spacing tokens
+
+**Example:**
+```typescript
+// Common pattern: Card content with title, body, actions
+<VStack gap="1rem" padding="2rem">
+  <Typography variant="heading">Card Title</Typography>
+  <Typography variant="body">Description text goes here.</Typography>
+  <Button appearance={Button.APPEARANCES.PRIMARY}>Action</Button>
+</VStack>
 ```
 
 ---
@@ -404,10 +621,6 @@ const [isOpen, setIsOpen] = useState(false);
 <Typography variant="body" size="medium">
   This is regular body text.
 </Typography>
-
-<Typography variant="label" size="small">
-  Helper Text
-</Typography>
 ```
 
 ---
@@ -418,18 +631,36 @@ const [isOpen, setIsOpen] = useState(false);
 **Import:** `import Icon from '@rippling/pebble/Icon';`
 
 **Props:**
-- `type`: Icon type (e.g., `Icon.TYPES.CHECK`)
-- `size`: `number` (pixel size)
+- `type`: Icon type (e.g., `Icon.TYPES.CHECK`) - **REQUIRED**
+- `size`: `number` (pixel size, e.g., 16, 20, 24) - **NOT** `Icon.SIZES.M`
 - `color`: `string` (theme color token)
+- `aria-label`: `string` (required for interactive icons)
+
+**⚠️ CRITICAL: Icon does NOT have a SIZES constant. Use numeric pixel values.**
 
 **Example:**
 ```typescript
 const { theme } = useTheme();
 
+// Correct ✅
 <Icon 
   type={Icon.TYPES.CHECK}
   size={20}
   color={theme.colorSuccess}
+/>
+
+// Wrong ❌ - Icon.SIZES does not exist
+<Icon 
+  type={Icon.TYPES.CHECK}
+  size={Icon.SIZES.M}  // Will crash!
+/>
+
+// Interactive icon (requires aria-label)
+<Icon 
+  type={Icon.TYPES.SETTINGS_OUTLINE}
+  size={24}
+  onClick={() => handleSettings()}
+  aria-label="Open settings"
 />
 ```
 
@@ -442,11 +673,15 @@ Icon.TYPES.SUN_OUTLINE
 Icon.TYPES.OVERNIGHT_OUTLINE
 Icon.TYPES.CARET_DOWN
 Icon.TYPES.CARET_UP
-Icon.TYPES.CHEVRON_RIGHT
+Icon.TYPES.CHEVRON_RIGHT_OUTLINE
 Icon.TYPES.SEARCH_OUTLINE
 Icon.TYPES.INFO_OUTLINE
 Icon.TYPES.WARNING_OUTLINE
 Icon.TYPES.ERROR_OUTLINE
+Icon.TYPES.ORG_CHART_OUTLINE
+Icon.TYPES.STAR_OUTLINE
+Icon.TYPES.HEART_OUTLINE
+Icon.TYPES.DOLLAR_CIRCLE_OUTLINE
 ```
 
 ---
@@ -454,12 +689,25 @@ Icon.TYPES.ERROR_OUTLINE
 ### Avatar
 
 **Purpose:** User profile picture  
-**Import:** `import Avatar from '@rippling/pebble/Avatar';`
+**Import:** `import Avatar from '@rippling/pebble/Avatar';`  
+**Usage Guide:** [guides/components/avatar.md](./guides/components/avatar.md)
+
+**Avatar Props:**
+- `image`: `string` - Image URL (✅ **preferred prop**)
+- `src`: `string` - Image URL (alternative to image)
+- `name`: `string` - Name for initials fallback (required for accessibility)
+- `alt`: `string` - Alt text for image
+- `size`: `Avatar.SIZES._2XS | XS | S | M | L | XL | _2XL` - Avatar size
+- `imageBackground`: `string` - Background color
+- `onClick`: `() => void` - Click handler (makes avatar clickable)
+- `isSquare`: `boolean` - Use square shape instead of circle
 
 **Example:**
 ```typescript
+// With image (preferred)
 <Avatar
-  src="https://example.com/avatar.jpg"
+  image="https://example.com/avatar.jpg"
+  name="John Doe"
   alt="John Doe"
   size={Avatar.SIZES.M}
 />
@@ -476,16 +724,25 @@ Icon.TYPES.ERROR_OUTLINE
 ### Badge
 
 **Purpose:** Status indicator or count  
-**Import:** `import Badge from '@rippling/pebble/Badge';`
+**Import:** `import Badge from '@rippling/pebble/Badge';`  
+**Usage Guide:** [guides/components/badge.md](./guides/components/badge.md)
+
+**Badge Props:**
+- `appearance`: `Badge.APPEARANCES.SUCCESS | INFO | WARNING | DANGER | NEUTRAL` - Visual style
+- `size`: `Badge.SIZES.S | M | L` - Badge size
+- `children`: `ReactNode` - Badge content (text/number)
+- `onClick`: `() => void` - Click handler (makes badge clickable)
 
 **Example:**
 ```typescript
+// Status badge
 <Badge appearance={Badge.APPEARANCES.SUCCESS}>
   Active
 </Badge>
 
-<Badge appearance={Badge.APPEARANCES.INFO}>
-  3 New
+// Count badge
+<Badge appearance={Badge.APPEARANCES.INFO} size={Badge.SIZES.S}>
+  3
 </Badge>
 ```
 
@@ -496,21 +753,13 @@ Icon.TYPES.ERROR_OUTLINE
 ### SnackBar
 
 **Purpose:** Temporary notification  
-**Import:** `import SnackBar from '@rippling/pebble/SnackBar';`
+**Import:** `import SnackBar from '@rippling/pebble/SnackBar';`  
+**Usage Guide:** [guides/components/snackbar.md](./guides/components/snackbar.md)
 
 **Example:**
 ```typescript
-// Success message
 SnackBar.success('Changes saved successfully');
-
-// Error message
 SnackBar.error('Failed to save changes');
-
-// Info message
-SnackBar.info('Data is syncing');
-
-// Warning message
-SnackBar.warning('Connection unstable');
 ```
 
 ---
@@ -518,16 +767,12 @@ SnackBar.warning('Connection unstable');
 ### Spinner
 
 **Purpose:** Loading indicator  
-**Import:** `import Spinner from '@rippling/pebble/Spinner';`
+**Import:** `import Spinner from '@rippling/pebble/Spinner';`  
+**Usage Guide:** [guides/components/spinner.md](./guides/components/spinner.md)
 
 **Example:**
 ```typescript
 <Spinner size={Spinner.SIZES.M} />
-
-// With button
-<Button isLoading>
-  Saving...
-</Button>
 ```
 
 ---
@@ -535,7 +780,8 @@ SnackBar.warning('Connection unstable');
 ### ProgressBar
 
 **Purpose:** Visual progress indicator  
-**Import:** `import ProgressBar from '@rippling/pebble/ProgressBar';`
+**Import:** `import ProgressBar from '@rippling/pebble/ProgressBar';`  
+**Usage Guide:** [guides/components/progress-bar.md](./guides/components/progress-bar.md)
 
 **Example:**
 ```typescript
@@ -550,9 +796,85 @@ SnackBar.warning('Connection unstable');
 
 ## Advanced Components
 
+### TableBasic
+
+**Purpose:** Simple data table for displaying rows and columns of information  
+**Import:** `import TableBasic from '@rippling/pebble/TableBasic';`  
+**Usage Guide:** [guides/components/table-basic.md](./guides/components/table-basic.md)
+
+**⚠️ CRITICAL:** 
+- TableBasic is for displaying static data. Use DataTable for sorting/filtering/interaction.
+- Uses HTML-like table structure: `THead`, `TBody`, `Tr`, `Th`, `Td` (NOT `Row` and `Cell`)
+- Always wrap header cells in `<TableBasic.THead>` and body cells in `<TableBasic.TBody>`
+
+**TableBasic Props:**
+- `children`: `ReactNode` - Table structure (THead and TBody)
+- `title`: `string` - Optional table title
+- `width`: `number` - Width of the table container
+
+**Sub-components:**
+- `TableBasic.THead` - Table header section
+- `TableBasic.TBody` - Table body section
+- `TableBasic.Tr` - Table row
+- `TableBasic.Th` - Header cell (use inside THead)
+- `TableBasic.Td` - Data cell (use inside TBody)
+
+**TableBasic.Th / TableBasic.Td Props:**
+- `children`: `ReactNode` - Cell content
+- `align`: Use `TableBasic.ALIGNMENTS.LEFT | RIGHT | CENTER` - Text alignment
+
+**Example (Simple Table):**
+```typescript
+<TableBasic>
+  <TableBasic.THead>
+    <TableBasic.Tr>
+      <TableBasic.Th>Name</TableBasic.Th>
+      <TableBasic.Th>Email</TableBasic.Th>
+      <TableBasic.Th>Role</TableBasic.Th>
+    </TableBasic.Tr>
+  </TableBasic.THead>
+  <TableBasic.TBody>
+    <TableBasic.Tr>
+      <TableBasic.Td>John Doe</TableBasic.Td>
+      <TableBasic.Td>john@example.com</TableBasic.Td>
+      <TableBasic.Td>Admin</TableBasic.Td>
+    </TableBasic.Tr>
+    <TableBasic.Tr>
+      <TableBasic.Td>Jane Smith</TableBasic.Td>
+      <TableBasic.Td>jane@example.com</TableBasic.Td>
+      <TableBasic.Td>User</TableBasic.Td>
+    </TableBasic.Tr>
+  </TableBasic.TBody>
+</TableBasic>
+```
+
+**Example (With Title):**
+```typescript
+<TableBasic title="Team Members">
+  <TableBasic.THead>
+    <TableBasic.Tr>
+      <TableBasic.Th>Name</TableBasic.Th>
+      <TableBasic.Th align={TableBasic.ALIGNMENTS.RIGHT}>Count</TableBasic.Th>
+    </TableBasic.Tr>
+  </TableBasic.THead>
+  <TableBasic.TBody>
+    <TableBasic.Tr>
+      <TableBasic.Td>Projects</TableBasic.Td>
+      <TableBasic.Td align={TableBasic.ALIGNMENTS.RIGHT}>24</TableBasic.Td>
+    </TableBasic.Tr>
+    <TableBasic.Tr>
+      <TableBasic.Td>Tasks</TableBasic.Td>
+      <TableBasic.Td align={TableBasic.ALIGNMENTS.RIGHT}>156</TableBasic.Td>
+    </TableBasic.Tr>
+  </TableBasic.TBody>
+</TableBasic>
+```
+
+---
+
 ### DataTable
 
-**Purpose:** Tabular data display with sorting/filtering  
+**Purpose:** Interactive data table with sorting/filtering  
 **Import:** `import DataTable from '@rippling/pebble/DataTable';`
 
 **Example:**
@@ -573,20 +895,40 @@ SnackBar.warning('Connection unstable');
 ### Tabs
 
 **Purpose:** Content organization  
-**Import:** `import Tabs from '@rippling/pebble/Tabs';`
+**Import:** `import Tabs from '@rippling/pebble/Tabs';`  
+**Usage Guide:** [guides/components/tabs.md](./guides/components/tabs.md)
+
+**Tabs Props:**
+- `activeIndex`: `number` - Currently active tab index (required)
+- `onChange`: `(index: number) => void` - Tab change callback
+- `children`: `Tabs.Tab[]` - Tab children
+
+**Tabs.Tab Props:**
+- `title`: `string` - Tab label text (required)
+- `isDisabled`: `boolean` - Disable this tab
+- `badge`: `ReactNode` - Badge/count to display
+
+**⚠️ CRITICAL: Tabs use index-based navigation (numbers), NOT value-based (strings)**
+
+**Variants:**
+- `Tabs.LINK` - Link-style tabs (underline)
+- `Tabs.BUTTON` - Button-style tabs (filled background)
 
 **Example:**
 ```typescript
-<Tabs value={activeTab} onChange={setActiveTab}>
-  <Tabs.Tab value="overview" label="Overview" />
-  <Tabs.Tab value="details" label="Details" />
-  <Tabs.Tab value="settings" label="Settings" />
-</Tabs>
+const [activeTab, setActiveTab] = useState(0);
 
-<Tabs.Panel value="overview" activeValue={activeTab}>
+<Tabs.LINK activeIndex={activeTab} onChange={setActiveTab}>
+  <Tabs.Tab title="Overview" />
+  <Tabs.Tab title="Details" />
+  <Tabs.Tab title="Settings" />
+</Tabs.LINK>
+
+// Panel content
+<Tabs.Panel activeIndex={0} currentIndex={activeTab}>
   Overview content
 </Tabs.Panel>
-<Tabs.Panel value="details" activeValue={activeTab}>
+<Tabs.Panel activeIndex={1} currentIndex={activeTab}>
   Details content
 </Tabs.Panel>
 ```
@@ -596,7 +938,8 @@ SnackBar.warning('Connection unstable');
 ### Accordion
 
 **Purpose:** Collapsible content sections  
-**Import:** `import Accordion from '@rippling/pebble/Accordion';`
+**Import:** `import Accordion from '@rippling/pebble/Accordion';`  
+**Usage Guide:** [guides/components/expansion-panel.md](./guides/components/expansion-panel.md)
 
 **Example:**
 ```typescript
@@ -661,7 +1004,8 @@ SnackBar.warning('Connection unstable');
 
 ## See Also
 
+- [Token Catalog](./TOKEN_CATALOG.md) - Complete design token reference
 - [AI Prompting Guide](./AI_PROMPTING_GUIDE.md) - Detailed usage patterns
+- [Usage Guides](./guides/README.md) - Comprehensive component documentation
 - [Pebble Storybook](https://pebble.rippling.dev) - Interactive examples
-- [Theme Tokens](./THEME_TOKENS.md) - Complete token reference
 

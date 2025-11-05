@@ -44,10 +44,40 @@ yarn link @rippling/pebble
 yarn link @rippling/pebble-editor
 ```
 
-### 2. Start the Development Server
+### 2. Personalize Your Workspace (Automatic)
+
+When you run `yarn dev`, the setup automatically configures your personalized workspace from your git config:
 
 ```bash
 yarn dev
+```
+
+The script will:
+- ✅ Read your name from `git config user.name`
+- ✅ Read your email from `git config user.email`
+- ✅ Generate a Gravatar URL from your email
+- ✅ Try to detect your GitHub username from your git remote
+- ✅ Create a `.env.local` file with your preferences
+
+**Your homepage will display:** "Hi [YourFirstName], welcome to your Pebble Playground" with your avatar! 🎉
+
+#### Optional: Add GitHub Avatar
+
+For a GitHub avatar instead of Gravatar, either:
+
+**Option 1:** Set your GitHub username in git config
+```bash
+git config --global github.user "your-github-username"
+```
+
+**Option 2:** Add a GitHub remote to this repo
+```bash
+git remote add origin git@github.com:your-username/pebble-playground.git
+```
+
+Then re-run the setup:
+```bash
+yarn setup:user
 ```
 
 The playground will be available at http://localhost:4201
@@ -55,6 +85,8 @@ The playground will be available at http://localhost:4201
 ### 3. Verify Setup
 
 Open http://localhost:4201 in your browser. You should see:
+
+- Your personalized greeting with your avatar
 - A demo switcher with multiple options
 - Theme toggle (light/dark berry themes)
 - Working Rich Text Editor by default
@@ -70,6 +102,7 @@ The current `package.json` uses `"@rippling/pebble": "latest"`. You may need to 
 ### Current Dependencies
 
 The playground depends on:
+
 - `@rippling/pebble` - Main component library
 - `@rippling/pebble-editor` - Rich text editor components
 - `@rippling/lib-i18n` - Internationalization utilities
@@ -86,6 +119,7 @@ The playground depends on:
 ### "Module not found: GlobalStyle"
 
 **Solution:** Update the import in `src/main.tsx`:
+
 ```typescript
 // If GlobalStyle is exported from @rippling/pebble
 import GlobalStyle from '@rippling/pebble/GlobalStyle';
@@ -96,6 +130,7 @@ import GlobalStyle from '@rippling/pebble/GlobalStyle';
 ### TypeScript errors about missing types
 
 **Solution:** Ensure all `@types/*` packages are installed:
+
 ```bash
 yarn add -D @types/react @types/react-dom @types/lodash @types/node
 ```
@@ -136,12 +171,14 @@ const DEMO_OPTIONS = [
 ];
 
 // 4. Add to render logic
-{editorType === EditorType.MY_DEMO && (
-  <>
-    {isTopBarVisible && buttons}
-    <MyDemo />
-  </>
-)}
+{
+  editorType === EditorType.MY_DEMO && (
+    <>
+      {isTopBarVisible && buttons}
+      <MyDemo />
+    </>
+  );
+}
 ```
 
 ### Customize Theme
@@ -158,12 +195,7 @@ import {
 } from '@rippling/pebble/theme';
 
 const THEME_PROVIDER_PROPS = {
-  themeConfigs: [
-    lightThemeConfig,
-    darkThemeConfig,
-    lightThemeBerryConfig,
-    darkThemeBerryConfig,
-  ],
+  themeConfigs: [lightThemeConfig, darkThemeConfig, lightThemeBerryConfig, darkThemeBerryConfig],
 };
 ```
 
@@ -222,6 +254,7 @@ git push -u origin main
 ## CI/CD (Optional)
 
 You can set up GitHub Actions to:
+
 1. Run linting on PRs
 2. Build the playground
 3. Deploy to a static host (Vercel, Netlify, etc.)

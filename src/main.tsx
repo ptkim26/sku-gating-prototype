@@ -1,4 +1,8 @@
-import type { inline as Inline } from '@css-inline/css-inline-wasm';
+// EDITOR NOTE: Editors are disabled due to package incompatibility issues.
+// See EDITOR_ISSUE_ANALYSIS.md for details.
+// Use ~/htdocs/pebble/playground for editor functionality.
+
+// import type { inline as Inline } from '@css-inline/css-inline-wasm';
 import { initI18nTranslations } from '@rippling/lib-i18n';
 import Button from '@rippling/pebble/Button';
 import Drawer from '@rippling/pebble/Drawer';
@@ -8,12 +12,9 @@ import oneUiService, { getCurrentTheme } from '@rippling/pebble/services';
 import SnackBar from '@rippling/pebble/SnackBar';
 import {
   ThemeProvider,
-  darkThemeConfig,
-  lightThemeConfig,
-  darkThemeBerryConfig,
-  lightThemeBerryConfig,
   useTheme,
   useThemeSettings,
+  THEME_CONFIGS,
 } from '@rippling/pebble/theme';
 import resources from '@rippling/pebble/translations/locales/en-US/one-ui.json';
 import { debounce } from 'lodash';
@@ -21,29 +22,36 @@ import React, { StrictMode } from 'react';
 import * as ReactDOM from 'react-dom/client';
 import ReactJson from 'react-json-view';
 import ReactShadow from 'react-shadow';
-import {
-  DocumentEditor,
-  InlineEditor,
-  RichTextEditor,
-} from '@rippling/pebble-editor';
+import { BrowserRouter, Routes, Route, Navigate, useNavigate, useLocation } from 'react-router-dom';
+// import {
+//   DocumentEditor,
+//   InlineEditor,
+//   RichTextEditor,
+// } from '@rippling/editor';
 import GlobalStyle from '@rippling/pebble/GlobalStyle';
 import { SAMPLE_VARIABLES } from './__mock__/mockVariables';
 import Icon from '@rippling/pebble/Icon';
 import ModalDemo from './demos/modal-demo';
 import AnimationsDemo from './demos/animations-demo';
+import DesignTokensDemo from './demos/design-tokens-demo';
+import ForkedSelectTest from './demos/forked-select-test';
+import AppShellDemo from './demos/app-shell-demo';
+import IndexPage from './demos/index-page';
+import GettingStartedPage from './demos/getting-started-page';
+import DocViewerPage from './demos/doc-viewer-page';
 
-async function getCSSInliner(): Promise<typeof Inline> {
-  const [{ initWasm, inline }, { default: wasmUrl }] = await Promise.all([
-    import('@css-inline/css-inline-wasm'),
-    import(
-      // @ts-expect-error using url-loader in import syntax because we need to load the wasm file as url
-      '@css-inline/css-inline-wasm/index_bg.wasm?url'
-    ),
-  ]);
-  return initWasm(fetch(wasmUrl)).then(
-    () => (html, options) => inline(html, { ...options, loadRemoteStylesheets: false }), // loadRemoteStylesheets is not supported with WASM version
-  );
-}
+// async function getCSSInliner(): Promise<typeof Inline> {
+//   const [{ initWasm, inline }, { default: wasmUrl }] = await Promise.all([
+//     import('@css-inline/css-inline-wasm'),
+//     import(
+//       // @ts-expect-error using url-loader in import syntax because we need to load the wasm file as url
+//       '@css-inline/css-inline-wasm/index_bg.wasm?url'
+//     ),
+//   ]);
+//   return initWasm(fetch(wasmUrl)).then(
+//     () => (html, options) => inline(html, { ...options, loadRemoteStylesheets: false }), // loadRemoteStylesheets is not supported with WASM version
+//   );
+// }
 
 // Initialize @rippling/ui package
 oneUiService.init({} as any);
@@ -85,15 +93,39 @@ const getStoredStates = () =>
   JSON.parse(window.localStorage.getItem('pebble-editor-playground') || '{}');
 
 enum EditorType {
-  RICH_TEXT = 'rich-text',
-  DOCUMENT = 'document',
-  INLINE = 'inline',
+  // RICH_TEXT = 'rich-text',
+  // DOCUMENT = 'document',
+  // INLINE = 'inline',
   MODAL_DEMO = 'modal-demo',
   ANIMATIONS = 'animations',
+  DESIGN_TOKENS = 'design-tokens',
+  FORKED_SELECT_TEST = 'forked-select-test',
+  APP_SHELL = 'app-shell',
 }
 
-const Playground = (props: { inlineCSS: typeof Inline; className?: string }) => {
-  const { inlineCSS, className } = props;
+// Map demo types to URL paths
+const DEMO_ROUTES: Record<EditorType, string> = {
+  [EditorType.APP_SHELL]: '/app-shell-demo',
+  [EditorType.DESIGN_TOKENS]: '/design-tokens-demo',
+  [EditorType.ANIMATIONS]: '/animations-demo',
+  [EditorType.MODAL_DEMO]: '/drawer-demo',
+  [EditorType.FORKED_SELECT_TEST]: '/forked-select-test',
+};
+
+// Reverse map for path to demo type
+const PATH_TO_DEMO: Record<string, EditorType> = Object.entries(DEMO_ROUTES).reduce(
+  (acc, [type, path]) => {
+    acc[path] = type as EditorType;
+    return acc;
+  },
+  {} as Record<string, EditorType>
+);
+
+const Playground = (props: { className?: string }) => {
+  const { className } = props;
+  const navigate = useNavigate();
+  const location = useLocation();
+  
   const storedData = React.useMemo(() => {
     try {
       return getStoredStates();
@@ -103,9 +135,32 @@ const Playground = (props: { inlineCSS: typeof Inline; className?: string }) => 
     }
   }, []);
 
-  const { changeTheme } = useThemeSettings();
-  const { name: currentThemeName, theme } = useTheme();
-  const [editorType, setEditorType] = React.useState(storedData.editorType ?? EditorType.RICH_TEXT);
+  const { changeTheme, changeMode } = useThemeSettings() as any;
+  const { name: currentThemeName, theme, mode: currentMode } = useTheme();
+  
+  // Get current demo type from URL path
+  const getCurrentDemoFromPath = React.useCallback(() => {
+    return PATH_TO_DEMO[location.pathname] ?? EditorType.DESIGN_TOKENS;
+  }, [location.pathname]);
+  
+  const [editorType, setEditorType] = React.useState(() => getCurrentDemoFromPath());
+  
+  // Sync URL when demo changes
+  React.useEffect(() => {
+    const path = DEMO_ROUTES[editorType];
+    if (path && location.pathname !== path) {
+      navigate(path, { replace: false });
+    }
+  }, [editorType, navigate, location.pathname]);
+  
+  // Sync demo when URL changes
+  React.useEffect(() => {
+    const demoFromPath = getCurrentDemoFromPath();
+    if (demoFromPath !== editorType) {
+      setEditorType(demoFromPath);
+    }
+  }, [location.pathname, getCurrentDemoFromPath, editorType]);
+  // const [inlineCSS, setInlineCSS] = React.useState<typeof Inline>();
   const [isEditable, setIsEditable] = React.useState(storedData.isEditable ?? true);
   const [isDisabled, setIsDisabled] = React.useState(storedData.isDisabled ?? false);
   const [showPreview, setShowPreview] = React.useState(storedData.showPreview ?? false);
@@ -118,6 +173,10 @@ const Playground = (props: { inlineCSS: typeof Inline; className?: string }) => 
   const [json, setJson] = React.useState({});
   const [isDemoSwitcherOpen, setIsDemoSwitcherOpen] = React.useState(false);
   const [isTopBarVisible, setIsTopBarVisible] = React.useState(true);
+
+  // React.useEffect(() => {
+  //   getCSSInliner().then(setInlineCSS);
+  // }, []);
 
   React.useEffect(() => {
     storeStates({
@@ -172,11 +231,14 @@ const Playground = (props: { inlineCSS: typeof Inline; className?: string }) => 
   console.log(html);
 
   const DEMO_OPTIONS = [
-    { type: EditorType.RICH_TEXT, label: 'Rich Text Editor' },
-    { type: EditorType.DOCUMENT, label: 'Document Editor' },
-    { type: EditorType.INLINE, label: 'Inline Editor' },
-    { type: EditorType.MODAL_DEMO, label: 'Drawer Demo' },
+    // { type: EditorType.RICH_TEXT, label: 'Rich Text Editor' },
+    // { type: EditorType.DOCUMENT, label: 'Document Editor' },
+    // { type: EditorType.INLINE, label: 'Inline Editor' },
+    { type: EditorType.APP_SHELL, label: 'App Shell' },
+    { type: EditorType.DESIGN_TOKENS, label: 'Design Tokens' },
     { type: EditorType.ANIMATIONS, label: 'Animations' },
+    { type: EditorType.MODAL_DEMO, label: 'Drawer Demo' },
+    { type: EditorType.FORKED_SELECT_TEST, label: 'Forked Select Test' },
   ];
 
   const SETTINGS_OPTIONS = [
@@ -232,11 +294,11 @@ const Playground = (props: { inlineCSS: typeof Inline; className?: string }) => 
       key="Theme"
       aria-label="toggle-theme"
       icon={
-        currentThemeName === 'berry-dark' ? Icon.TYPES.SUN_OUTLINE : Icon.TYPES.OVERNIGHT_OUTLINE
+        currentMode === 'dark' ? Icon.TYPES.SUN_OUTLINE : Icon.TYPES.OVERNIGHT_OUTLINE
       }
       size={Button.SIZES.S}
       appearance={Button.APPEARANCES.OUTLINE}
-      onClick={() => changeTheme(currentThemeName === 'berry-dark' ? 'berry-light' : 'berry-dark')}
+      onClick={() => changeMode(currentMode === 'dark' ? 'light' : 'dark')}
     />
   );
 
@@ -282,11 +344,18 @@ const Playground = (props: { inlineCSS: typeof Inline; className?: string }) => 
   const buttons = (
     <div
       style={{
-        display: 'flex',
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        right: 0,
+        display: isTopBarVisible ? 'flex' : 'none',
         gap: '10px',
         padding: '16px 20px',
         justifyContent: 'space-between',
         alignItems: 'center',
+        backgroundColor: theme.colorSurfaceBright,
+        borderBottom: `1px solid ${theme.colorOutlineVariant}`,
+        zIndex: 1000,
       }}
     >
       <h1
@@ -307,17 +376,39 @@ const Playground = (props: { inlineCSS: typeof Inline; className?: string }) => 
     </div>
   );
 
+  // Add keyboard shortcut listener for cmd+K
+  React.useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Check for Cmd+K (Mac) or Ctrl+K (Windows/Linux)
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        e.stopPropagation();
+        setIsTopBarVisible(prev => !prev);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, []);
+
   return (
-    <div
-      role="main"
-      style={{
-        backgroundColor: theme.colorSurface,
-        minHeight: '100vh',
-      }}
-      className={className}
-    >
-      {demoSwitcherDrawer}
-      {editorType === EditorType.RICH_TEXT && (
+    <>
+      {editorType !== EditorType.APP_SHELL && buttons}
+      <div
+        role="main"
+        style={{
+          backgroundColor: theme.colorSurface,
+          minHeight: '100vh',
+          paddingTop: isTopBarVisible && editorType !== EditorType.APP_SHELL ? '60px' : '0',
+          transition: 'padding-top 0.2s ease',
+        }}
+        className={className}
+      >
+        {demoSwitcherDrawer}
+      {/* EDITORS DISABLED - See EDITOR_ISSUE_ANALYSIS.md */}
+      {/* {editorType === EditorType.RICH_TEXT && (
         <>
           {isTopBarVisible && buttons}
           <div style={{ maxWidth: '900px', margin: '20px auto 0' }}>
@@ -368,23 +459,20 @@ const Playground = (props: { inlineCSS: typeof Inline; className?: string }) => 
             />
           </div>
         </>
-      )}
+      )} */}
 
-      {editorType === EditorType.MODAL_DEMO && (
-        <>
-          {isTopBarVisible && buttons}
-          <ModalDemo />
-        </>
-      )}
+      {editorType === EditorType.APP_SHELL && <AppShellDemo />}
 
-      {editorType === EditorType.ANIMATIONS && (
-        <>
-          {isTopBarVisible && buttons}
-          <AnimationsDemo />
-        </>
-      )}
+      {editorType === EditorType.DESIGN_TOKENS && <DesignTokensDemo />}
 
-      <div style={{ maxWidth: '900px', margin: '32px auto 0' }}>
+      {editorType === EditorType.MODAL_DEMO && <ModalDemo />}
+
+      {editorType === EditorType.ANIMATIONS && <AnimationsDemo />}
+
+      {editorType === EditorType.FORKED_SELECT_TEST && <ForkedSelectTest />}
+
+      {/* EDITOR PREVIEW DISABLED - See EDITOR_ISSUE_ANALYSIS.md */}
+      {/* <div style={{ maxWidth: '900px', margin: '32px auto 0' }}>
         {!logTypingPerf && showEditorBasedPreview && (
           <>
             <p style={{ textDecoration: 'underline' }}>Editor Preview</p>
@@ -428,24 +516,31 @@ const Playground = (props: { inlineCSS: typeof Inline; className?: string }) => 
             <ReactJson src={json} />
           </>
         )}
+      </div> */}
       </div>
-    </div>
+    </>
   );
 };
 
-const THEME_PROVIDER_PROPS = {
-  themeConfigs: [lightThemeBerryConfig, darkThemeBerryConfig],
-};
-
-init()
-  .then(getCSSInliner)
-  .then(inlineCSS => {
-    root.render(
-      <StrictMode>
-        <ThemeProvider {...THEME_PROVIDER_PROPS} defaultTheme="berry-light">
+init().then(() => {
+  root.render(
+    <StrictMode>
+      <BrowserRouter>
+        <ThemeProvider themeConfigs={THEME_CONFIGS} defaultTheme="berry-light">
           <GlobalStyle />
-          <Playground inlineCSS={inlineCSS} />
+          <Routes>
+            <Route path="/" element={<IndexPage />} />
+            <Route path="/getting-started" element={<GettingStartedPage />} />
+            <Route path="/docs" element={<DocViewerPage />} />
+            <Route path="/app-shell-demo" element={<Playground />} />
+            <Route path="/design-tokens-demo" element={<Playground />} />
+            <Route path="/animations-demo" element={<Playground />} />
+            <Route path="/drawer-demo" element={<Playground />} />
+            <Route path="/forked-select-test" element={<Playground />} />
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
         </ThemeProvider>
-      </StrictMode>,
-    );
-  });
+      </BrowserRouter>
+    </StrictMode>,
+  );
+});
