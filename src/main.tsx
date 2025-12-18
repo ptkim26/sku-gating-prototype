@@ -11,14 +11,11 @@ import * as ReactDOM from 'react-dom/client';
 import { BrowserRouter, Routes, Route, Navigate, useNavigate, useLocation } from 'react-router-dom';
 import GlobalStyle from '@rippling/pebble/GlobalStyle';
 import Icon from '@rippling/pebble/Icon';
-import ModalDemo from './demos/@paul/modal-demo';
-import AnimationsDemo from './demos/@paul/animations-demo';
-import DesignTokensDemo from './demos/@paul/design-tokens-demo';
-import ForkedSelectTest from './demos/@paul/forked-select-test';
-import MyFeatureDemo from './demos/@paul/my-feature-demo';
-import AppShellDemo from './demos/official/app-shell-demo';
-import CompositionManagerDemo from './demos/@dvora/CompositionManager/composition-manager-demo';
-import { CompositionDetail } from './demos/@dvora/CompositionManager/compositions/CompositionDetail';
+import AnimationsDemo from './demos/animations-demo';
+import DesignTokensDemo from './demos/design-tokens-demo';
+import AppShellTemplate from './demos/app-shell-template';
+import CompositionManagerDemo from './demos/composition-manager/composition-manager-demo';
+import { CompositionDetail } from './demos/composition-manager/compositions/CompositionDetail';
 import IndexPage from './demos/index-page';
 import GettingStartedPage from './demos/getting-started-page';
 import DocViewerPage from './demos/doc-viewer-page';
@@ -65,27 +62,18 @@ const getStoredStates = () =>
   JSON.parse(window.localStorage.getItem('pebble-editor-playground') || '{}');
 
 enum EditorType {
-  // RICH_TEXT = 'rich-text',
-  // DOCUMENT = 'document',
-  // INLINE = 'inline',
-  MODAL_DEMO = 'modal-demo',
-  ANIMATIONS = 'animations',
-  DESIGN_TOKENS = 'design-tokens',
-  FORKED_SELECT_TEST = 'forked-select-test',
-  MY_FEATURE = 'my-feature',
   APP_SHELL = 'app-shell',
+  DESIGN_TOKENS = 'design-tokens',
+  ANIMATIONS = 'animations',
   COMPOSITION_MANAGER = 'composition-manager',
 }
 
 // Map demo types to URL paths
 const DEMO_ROUTES: Record<EditorType, string> = {
-  [EditorType.APP_SHELL]: '/app-shell-demo',
+  [EditorType.APP_SHELL]: '/app-shell-template',
   [EditorType.DESIGN_TOKENS]: '/design-tokens-demo',
   [EditorType.ANIMATIONS]: '/animations-demo',
-  [EditorType.MODAL_DEMO]: '/drawer-demo',
-  [EditorType.FORKED_SELECT_TEST]: '/forked-select-test',
-  [EditorType.MY_FEATURE]: '/my-feature-demo',
-  [EditorType.COMPOSITION_MANAGER]: '/app-studio/composition-manager',
+  [EditorType.COMPOSITION_MANAGER]: '/composition-manager',
 };
 
 // Reverse map for path to demo type
@@ -200,15 +188,9 @@ const Playground = (props: { className?: string }) => {
   // );
 
   const DEMO_OPTIONS = [
-    // { type: EditorType.RICH_TEXT, label: 'Rich Text Editor' },
-    // { type: EditorType.DOCUMENT, label: 'Document Editor' },
-    // { type: EditorType.INLINE, label: 'Inline Editor' },
-    { type: EditorType.APP_SHELL, label: 'App Shell' },
+    { type: EditorType.APP_SHELL, label: 'App Shell Template' },
     { type: EditorType.DESIGN_TOKENS, label: 'Design Tokens' },
     { type: EditorType.ANIMATIONS, label: 'Animations' },
-    { type: EditorType.MODAL_DEMO, label: 'Drawer Demo' },
-    { type: EditorType.FORKED_SELECT_TEST, label: 'Forked Select Test' },
-    { type: EditorType.MY_FEATURE, label: 'My Feature' },
     { type: EditorType.COMPOSITION_MANAGER, label: 'Composition Manager' },
   ];
 
@@ -364,13 +346,13 @@ const Playground = (props: { className?: string }) => {
 
   return (
     <>
-      {editorType !== EditorType.APP_SHELL && editorType !== EditorType.MY_FEATURE && editorType !== EditorType.COMPOSITION_MANAGER && buttons}
+      {editorType !== EditorType.APP_SHELL && editorType !== EditorType.COMPOSITION_MANAGER && buttons}
       <div
         role="main"
         style={{
           backgroundColor: theme.colorSurface,
           minHeight: '100vh',
-          paddingTop: isTopBarVisible && editorType !== EditorType.APP_SHELL && editorType !== EditorType.MY_FEATURE && editorType !== EditorType.COMPOSITION_MANAGER ? '60px' : '0',
+          paddingTop: isTopBarVisible && editorType !== EditorType.APP_SHELL && editorType !== EditorType.COMPOSITION_MANAGER ? '60px' : '0',
           transition: 'padding-top 0.2s ease',
         }}
         className={className}
@@ -430,17 +412,11 @@ const Playground = (props: { className?: string }) => {
         </>
       )} */}
 
-        {editorType === EditorType.APP_SHELL && <AppShellDemo />}
+        {editorType === EditorType.APP_SHELL && <AppShellTemplate />}
 
         {editorType === EditorType.DESIGN_TOKENS && <DesignTokensDemo />}
 
-        {editorType === EditorType.MODAL_DEMO && <ModalDemo />}
-
         {editorType === EditorType.ANIMATIONS && <AnimationsDemo />}
-
-        {editorType === EditorType.FORKED_SELECT_TEST && <ForkedSelectTest />}
-
-        {editorType === EditorType.MY_FEATURE && <MyFeatureDemo />}
 
         {editorType === EditorType.COMPOSITION_MANAGER && <CompositionManagerDemo />}
 
@@ -505,14 +481,11 @@ init().then(() => {
             <Route path="/" element={<IndexPage />} />
             <Route path="/getting-started" element={<GettingStartedPage />} />
             <Route path="/docs" element={<DocViewerPage />} />
-            <Route path="/app-shell-demo" element={<Playground />} />
+            <Route path="/app-shell-template" element={<Playground />} />
             <Route path="/design-tokens-demo" element={<Playground />} />
             <Route path="/animations-demo" element={<Playground />} />
-            <Route path="/drawer-demo" element={<Playground />} />
-            <Route path="/forked-select-test" element={<Playground />} />
-            <Route path="/my-feature-demo" element={<Playground />} />
-            <Route path="/app-studio/composition-manager" element={<Playground />} />
-            <Route path="/app-studio/composition-manager/compositions/:id" element={<CompositionDetail />} />
+            <Route path="/composition-manager" element={<Playground />} />
+            <Route path="/composition-manager/compositions/:id" element={<CompositionDetail />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </ThemeProvider>

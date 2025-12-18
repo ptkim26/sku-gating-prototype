@@ -27,7 +27,7 @@
     "@emotion/react": "^11.11.3",
     "@emotion/styled": "^11.11.0",
     "@rippling/lib-i18n": "latest",
-    "@rippling/pebble": "latest",
+    "@rippling/pebble": "^0.1017.0",
     "@rippling/pebble-tokens": "^0.0.107",
     "@rippling/ui-utils": "latest",
     "lodash": "^4.17.21",
