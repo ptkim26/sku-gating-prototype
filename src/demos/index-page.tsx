@@ -635,13 +635,34 @@ const IndexPage: React.FC = () => {
                     .cursorrules
                   </TableBasic.Td>
                   <TableBasic.Td>
-                    Primary directive, token reference, component gotchas
+                    Primary directive, token reference, forbidden patterns, component gotchas
                   </TableBasic.Td>
                   <TableBasic.Td>
                     Hand-written for AI agents
                   </TableBasic.Td>
                   <TableBasic.Td>
                     <CodePath theme={theme}>.cursorrules</CodePath>
+                  </TableBasic.Td>
+                </TableBasic.Tr>
+                
+                <TableBasic.Tr>
+                  <TableBasic.Td>
+                    <ResourceLink 
+                      theme={theme}
+                      href="https://rippling.design/pebble"
+                      target="_blank"
+                    >
+                      Pebble MCP
+                    </ResourceLink>
+                  </TableBasic.Td>
+                  <TableBasic.Td>
+                    Live component source, full prop types, Storybook examples
+                  </TableBasic.Td>
+                  <TableBasic.Td>
+                    Auto-queried from @rippling/pebble-mcp
+                  </TableBasic.Td>
+                  <TableBasic.Td>
+                    <CodePath theme={theme}>.cursor/mcp.json</CodePath>
                   </TableBasic.Td>
                 </TableBasic.Tr>
                 
@@ -658,10 +679,10 @@ const IndexPage: React.FC = () => {
                     </ResourceLink>
                   </TableBasic.Td>
                   <TableBasic.Td>
-                    Component props, examples, and common gotchas
+                    Curated quick reference with common patterns and gotchas
                   </TableBasic.Td>
                   <TableBasic.Td>
-                    Hand-curated from Pebble source
+                    Hand-curated for this playground
                   </TableBasic.Td>
                   <TableBasic.Td>
                     <CodePath theme={theme}>docs/COMPONENT_CATALOG.md</CodePath>
@@ -680,21 +701,6 @@ const IndexPage: React.FC = () => {
                   </TableBasic.Td>
                   <TableBasic.Td>
                     <CodePath theme={theme}>src/demos/*.tsx</CodePath>
-                  </TableBasic.Td>
-                </TableBasic.Tr>
-                
-                <TableBasic.Tr>
-                  <TableBasic.Td>
-                    Pebble source
-                  </TableBasic.Td>
-                  <TableBasic.Td>
-                    When Catalog is missing info or needs deeper understanding
-                  </TableBasic.Td>
-                  <TableBasic.Td>
-                    Rippling Pebble monorepo
-                  </TableBasic.Td>
-                  <TableBasic.Td>
-                    <CodePath theme={theme}>../pebble/packages/rippling-ui/</CodePath>
                   </TableBasic.Td>
                 </TableBasic.Tr>
               </TableBasic.TBody>
