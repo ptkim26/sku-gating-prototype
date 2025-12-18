@@ -34,6 +34,8 @@ yarn dev
 
 The playground opens at **http://localhost:4201** with a personalized greeting.
 
+> **Note:** Running `yarn install` automatically sets up the **Pebble MCP** (Model Context Protocol) server. This gives AI assistants like Cursor direct access to Pebble component documentation, props, and examples. Just restart Cursor after install to activate it!
+
 ### 3. Start building
 
 Open this folder in Cursor and start chatting with AI. Try this:
@@ -115,19 +117,32 @@ This playground is designed to work seamlessly with AI coding assistants like Cu
 
 ### 📁 Your Demos (`src/demos/`)
 
-This is where your prototypes live, organized into folders:
+This is where your prototypes live:
 
-- **`official/`** - Blessed starter templates (app shell, design tokens, etc.)
-- **`team/`** - Collaborative work-in-progress demos
-- **`@yourname/`** - Your personal shareable demos
+- **`app-shell-template.tsx`** - The main template to copy for new demos (includes nav, sidebar, content area)
+- **Other demos** - Working examples showing different Pebble patterns
 - **`private/`** - Your scratch pad (gitignored, never committed)
 
 **Quickest way to create a new demo:**
-1. Start in `private/` folder for messy experiments
-2. When it works, move to `@yourname/` to share with team
-3. If team loves it, promote to `team/` or `official/`
 
-**Or just ask Cursor:** *"Create a new demo in private/ called employee-directory"*
+Ask Cursor: *"Create a new demo called 'Employee Directory' by copying app-shell-template.tsx"*
+
+Or start from scratch: *"Create a simple demo showing a card with user info"*
+
+### 🪨 Pebble MCP (AI Superpower)
+
+The **Pebble MCP** (Model Context Protocol) server is automatically configured when you run `yarn install`. This gives AI assistants direct access to:
+
+- **Live component source code** - Actual prop types and implementations
+- **Storybook examples** - Working code examples for every component
+- **Full component list** - Discover all available Pebble components
+
+**Check your MCP status:**
+```bash
+yarn mcp:status
+```
+
+**Troubleshooting:** If Cursor doesn't seem to know about Pebble components, restart Cursor after running `yarn install`. The MCP server starts automatically when Cursor opens the project.
 
 ### 📖 Built-in Docs (`docs/`)
 

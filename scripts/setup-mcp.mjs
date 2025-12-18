@@ -4,8 +4,7 @@
  * Setup script for Pebble MCP Server
  * 
  * This script helps configure the Pebble MCP server for Cursor IDE.
- * It can either use the workspace config (.cursor/mcp.json) or merge
- * with the user's global config (~/.cursor/mcp.json).
+ * It copies the template config from .cursor-config/ to .cursor/
  */
 
 import fs from 'fs';
@@ -17,6 +16,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const projectRoot = path.resolve(__dirname, '..');
 
+const TEMPLATE_MCP_CONFIG = path.join(projectRoot, '.cursor-config', 'mcp.json');
 const WORKSPACE_MCP_CONFIG = path.join(projectRoot, '.cursor', 'mcp.json');
 const USER_MCP_CONFIG = path.join(os.homedir(), '.cursor', 'mcp.json');
 
@@ -46,6 +46,41 @@ function writeJsonFile(filepath, data) {
   fs.writeFileSync(filepath, JSON.stringify(data, null, 2) + '\n');
 }
 
+function setup() {
+  console.log('\n🪨 Setting up Pebble MCP...\n');
+  
+  // Check if workspace config already exists
+  if (fs.existsSync(WORKSPACE_MCP_CONFIG)) {
+    const existing = readJsonFile(WORKSPACE_MCP_CONFIG);
+    if (existing?.mcpServers?.Pebble) {
+      console.log('✅ Pebble MCP already configured in .cursor/mcp.json');
+      return;
+    }
+  }
+  
+  // Copy template to .cursor/
+  if (fs.existsSync(TEMPLATE_MCP_CONFIG)) {
+    const template = readJsonFile(TEMPLATE_MCP_CONFIG);
+    
+    // Merge with existing config if present
+    let config = readJsonFile(WORKSPACE_MCP_CONFIG) || { mcpServers: {} };
+    if (!config.mcpServers) {
+      config.mcpServers = {};
+    }
+    config.mcpServers.Pebble = template.mcpServers.Pebble;
+    
+    writeJsonFile(WORKSPACE_MCP_CONFIG, config);
+    console.log('✅ Created .cursor/mcp.json with Pebble MCP');
+    console.log('   Restart Cursor to activate the MCP server\n');
+  } else {
+    console.log('❌ Template config not found at .cursor-config/mcp.json');
+    console.log('   Creating default config...\n');
+    
+    writeJsonFile(WORKSPACE_MCP_CONFIG, { mcpServers: PEBBLE_MCP_CONFIG });
+    console.log('✅ Created .cursor/mcp.json with Pebble MCP');
+  }
+}
+
 function checkMcpStatus() {
   console.log('\n🔍 Checking MCP Configuration...\n');
   
@@ -55,7 +90,8 @@ function checkMcpStatus() {
     console.log('✅ Workspace MCP config found (.cursor/mcp.json)');
     console.log('   Pebble MCP is configured for this project\n');
   } else {
-    console.log('❌ Workspace MCP config missing or incomplete\n');
+    console.log('❌ Workspace MCP config missing or incomplete');
+    console.log('   Run: yarn mcp:setup\n');
   }
   
   // Check user config
@@ -107,11 +143,9 @@ function printUsage() {
 ║                                                                ║
 ║  Available commands:                                           ║
 ║                                                                ║
-║    yarn mcp:status   - Check MCP configuration status          ║
-║    yarn mcp:global   - Add Pebble to global Cursor config      ║
-║                                                                ║
-║  The workspace config (.cursor/mcp.json) is already set up.    ║
-║  Just restart Cursor and the MCP should be available!          ║
+║    yarn mcp:setup   - Set up MCP for this workspace            ║
+║    yarn mcp:status  - Check MCP configuration status           ║
+║    yarn mcp:global  - Add Pebble to global Cursor config       ║
 ║                                                                ║
 ╚════════════════════════════════════════════════════════════════╝
 `);
@@ -121,6 +155,9 @@ function printUsage() {
 const command = process.argv[2];
 
 switch (command) {
+  case 'setup':
+    setup();
+    break;
   case 'status':
     checkMcpStatus();
     break;
@@ -131,5 +168,3 @@ switch (command) {
     printUsage();
     checkMcpStatus();
 }
-
-
