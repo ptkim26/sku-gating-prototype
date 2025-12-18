@@ -143,7 +143,7 @@ You don't need to read these—AI does it for you. But they're there if you want
 
 The playground includes working examples:
 - **App Shell Template** - Full Rippling app layout (nav, sidebar, content) - copy this to start new demos
-- **Design Tokens Demo** - Browse all colors, spacing, and typography
+- **Composition Manager** - Complex multi-view app with tables, modals, and state management
 - **Getting Started** - This guide, but prettier
 
 Click around to see what's possible!

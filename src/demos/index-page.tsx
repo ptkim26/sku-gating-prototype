@@ -41,20 +41,6 @@ const ALL_DEMOS: DemoCard[] = [
   },
   // Prototypes - examples and experiments
   {
-    title: 'Design Tokens',
-    description: 'Browse and explore Pebble design tokens including colors, spacing, and typography.',
-    path: '/design-tokens-demo',
-    icon: Icon.TYPES.CUP_DROPLET_OUTLINE,
-    category: 'prototype',
-  },
-  {
-    title: 'Animations',
-    description: 'See Pebble animation patterns and transitions in action.',
-    path: '/animations-demo',
-    icon: Icon.TYPES.PLAY_CIRCLE_OUTLINE,
-    category: 'prototype',
-  },
-  {
     title: 'Composition Manager',
     description: 'A complex example showing a multi-view app with tables, modals, and state management.',
     path: '/composition-manager',
