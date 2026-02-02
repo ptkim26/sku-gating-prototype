@@ -54,6 +54,13 @@ const ALL_DEMOS: DemoCard[] = [
     icon: Icon.TYPES.CALENDAR_OUTLINE,
     category: 'prototype',
   },
+  {
+    title: 'Canada Bulk ROE',
+    description: 'Bulk Record of Employment management for Canadian payroll.',
+    path: '/canada-bulk-roe',
+    icon: Icon.TYPES.DOCUMENT_OUTLINE,
+    category: 'prototype',
+  },
 ];
 
 // Filter helpers
