@@ -41,6 +41,13 @@ const ALL_DEMOS: DemoCard[] = [
   },
   // Prototypes - examples and experiments
   {
+    title: 'Employee Directory',
+    description: 'A searchable directory of employees with avatars, names, job titles, and department filtering.',
+    path: '/employee-directory',
+    icon: Icon.TYPES.PEOPLE_OUTLINE,
+    category: 'prototype',
+  },
+  {
     title: 'Composition Manager',
     description: 'A complex example showing a multi-view app with tables, modals, and state management.',
     path: '/composition-manager',
