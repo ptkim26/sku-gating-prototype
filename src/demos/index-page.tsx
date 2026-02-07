@@ -29,9 +29,66 @@ interface DemoCard {
   category: DemoCategory;
 }
 
-// All demos in the playground
+// All demos in the playground — Supergroups concepts first, boilerplate last
 const ALL_DEMOS: DemoCard[] = [
-  // Templates - starting points you copy
+  // Supergroups concepts — lettered directions
+  {
+    title: 'Direction A: Inline Suggestion',
+    description: 'Detects shared attributes as you add names and suggests converting them to a group that stays up to date.',
+    path: '/direction-a-inline-suggestion',
+    icon: Icon.TYPES.STAR_OUTLINE,
+    category: 'prototype',
+  },
+  {
+    title: 'Direction B: Post-commit',
+    description: 'No interruptions while building. A suggestion appears when you preview the group.',
+    path: '/direction-b-post-commit',
+    icon: Icon.TYPES.CHECKBOX_WITHCHECK_OUTLINE,
+    category: 'prototype',
+  },
+  {
+    title: 'Direction C: Chip Highlighting',
+    description: 'Chips passively show department badges. When a pattern emerges, it highlights without prompting.',
+    path: '/direction-c-chip-highlighting',
+    icon: Icon.TYPES.PEOPLE_OUTLINE,
+    category: 'prototype',
+  },
+  {
+    title: 'Direction D: Empty-state Education',
+    description: 'Before typing names, the builder suggests whole teams and groups based on your org data.',
+    path: '/direction-d-empty-state',
+    icon: Icon.TYPES.QUESTION_CIRCLE_OUTLINE,
+    category: 'prototype',
+  },
+  {
+    title: 'Direction E: Search-Time Smart Results',
+    description: 'Group-level matches appear in search results alongside individuals. Discover teams as a natural part of searching.',
+    path: '/direction-e-smart-results',
+    icon: Icon.TYPES.SEARCH_OUTLINE,
+    category: 'prototype',
+  },
+  {
+    title: 'Direction F: Outcome-Forward Suggestion',
+    description: 'An improved inline suggestion that leads with the outcome — automatic updates — and shows a When/Then rule preview.',
+    path: '/direction-f-outcome-forward',
+    icon: Icon.TYPES.REFRESH_OUTLINE,
+    category: 'prototype',
+  },
+  {
+    title: 'Direction G: AI Bridge (Progressive Disclosure)',
+    description: 'Natural language input with progressive disclosure. Quick suggestions appear on focus, search reveals after first add.',
+    path: '/direction-g-ai-bridge',
+    icon: Icon.TYPES.CHAT_OUTLINE,
+    category: 'prototype',
+  },
+  {
+    title: 'Direction H: Unified Smart Input',
+    description: 'One intelligent input for everything. Type naturally for groups or search for people — the system figures out what you mean.',
+    path: '/direction-h-unified-input',
+    icon: Icon.TYPES.SEARCH_OUTLINE,
+    category: 'prototype',
+  },
+  // Boilerplate — templates and examples
   {
     title: 'App Shell Template',
     description: 'The main template to copy when creating a new demo. Includes navigation, sidebar, and content areas.',
@@ -39,7 +96,6 @@ const ALL_DEMOS: DemoCard[] = [
     icon: Icon.TYPES.HIERARCHY_HORIZONTAL_OUTLINE,
     category: 'template',
   },
-  // Prototypes - examples and experiments
   {
     title: 'Employee Directory',
     description: 'A searchable directory of employees with avatars, names, job titles, and department filtering.',
@@ -519,13 +575,6 @@ const IndexPage: React.FC = () => {
                 )}
                 <Card.Layout padding={Card.Layout.PADDINGS.PX_24}>
                   <CardContent>
-                    <CardIcon theme={theme}>
-                      <Icon 
-                        type={demo.icon} 
-                        size={24} 
-                        color={theme.colorPrimary}
-                      />
-                    </CardIcon>
                     <CardTitle theme={theme}>{demo.title}</CardTitle>
                     <CardDescription theme={theme}>
                       {demo.description}
@@ -572,14 +621,7 @@ const IndexPage: React.FC = () => {
                     style={{ cursor: 'pointer' }}
                   >
                     <TableBasic.Td>
-                      <HStack gap="0.5rem" alignItems="center">
-                        <Icon 
-                          type={demo.icon} 
-                          size={16} 
-                          color={theme.colorPrimary}
-                        />
-                        <DemoTableName theme={theme}>{demo.title}</DemoTableName>
-                      </HStack>
+                      <DemoTableName theme={theme}>{demo.title}</DemoTableName>
                     </TableBasic.Td>
                     <TableBasic.Td>
                       <DemoTableDescription theme={theme}>{demo.description}</DemoTableDescription>
