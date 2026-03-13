@@ -31,61 +31,20 @@ interface DemoCard {
 
 // All demos in the playground — Supergroups concepts first, boilerplate last
 const ALL_DEMOS: DemoCard[] = [
-  // Supergroups concepts — lettered directions
+  // Integration Overview Prototype
   {
-    title: 'Direction A: Inline Suggestion',
-    description: 'Detects shared attributes as you add names and suggests converting them to a group that stays up to date.',
-    path: '/direction-a-inline-suggestion',
-    icon: Icon.TYPES.STAR_OUTLINE,
+    title: 'Integration Overview',
+    description: 'Two surfaces (Overview + Capabilities) x two concepts each. HUD controls surface, concept, scenario, and individual capability/connection states.',
+    path: '/integration-overview',
+    icon: Icon.TYPES.BENTO_BOX,
     category: 'prototype',
   },
+  // Connection Status Prototype
   {
-    title: 'Direction B: Post-commit',
-    description: 'No interruptions while building. A suggestion appears when you preview the group.',
-    path: '/direction-b-post-commit',
-    icon: Icon.TYPES.CHECKBOX_WITHCHECK_OUTLINE,
-    category: 'prototype',
-  },
-  {
-    title: 'Direction C: Chip Highlighting',
-    description: 'Chips passively show department badges. When a pattern emerges, it highlights without prompting.',
-    path: '/direction-c-chip-highlighting',
-    icon: Icon.TYPES.PEOPLE_OUTLINE,
-    category: 'prototype',
-  },
-  {
-    title: 'Direction D: Empty-state Education',
-    description: 'Before typing names, the builder suggests whole teams and groups based on your org data.',
-    path: '/direction-d-empty-state',
-    icon: Icon.TYPES.QUESTION_CIRCLE_OUTLINE,
-    category: 'prototype',
-  },
-  {
-    title: 'Direction E: Search-Time Smart Results',
-    description: 'Group-level matches appear in search results alongside individuals. Discover teams as a natural part of searching.',
-    path: '/direction-e-smart-results',
-    icon: Icon.TYPES.SEARCH_OUTLINE,
-    category: 'prototype',
-  },
-  {
-    title: 'Direction F: Outcome-Forward Suggestion',
-    description: 'An improved inline suggestion that leads with the outcome — automatic updates — and shows a When/Then rule preview.',
-    path: '/direction-f-outcome-forward',
-    icon: Icon.TYPES.REFRESH_OUTLINE,
-    category: 'prototype',
-  },
-  {
-    title: 'Direction G: AI Bridge (Progressive Disclosure)',
-    description: 'Natural language input with progressive disclosure. Quick suggestions appear on focus, search reveals after first add.',
-    path: '/direction-g-ai-bridge',
-    icon: Icon.TYPES.CHAT_OUTLINE,
-    category: 'prototype',
-  },
-  {
-    title: 'Direction H: Unified Smart Input',
-    description: 'One intelligent input for everything. Type naturally for groups or search for people — the system figures out what you mean.',
-    path: '/direction-h-unified-input',
-    icon: Icon.TYPES.SEARCH_OUTLINE,
+    title: 'Connection Status',
+    description: 'Interactive prototype: connection health card, scoped tab warnings, administration page. Toggle connection states to see the full framework in action.',
+    path: '/connection-status',
+    icon: Icon.TYPES.LINK_OUTLINE,
     category: 'prototype',
   },
   // Boilerplate — templates and examples

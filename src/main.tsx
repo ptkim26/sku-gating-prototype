@@ -13,14 +13,8 @@ import { CompositionDetail } from './demos/composition-manager/compositions/Comp
 import IndexPage from './demos/index-page';
 import GettingStartedPage from './demos/getting-started-page';
 import DocViewerPage from './demos/doc-viewer-page';
-import DirectionAInlineSuggestion from './demos/supergroups/direction-a-inline-suggestion';
-import DirectionBPostCommit from './demos/supergroups/direction-b-post-commit';
-import DirectionCChipHighlighting from './demos/supergroups/direction-c-chip-highlighting';
-import DirectionDEmptyState from './demos/supergroups/direction-d-empty-state';
-import DirectionESmartResults from './demos/supergroups/direction-e-smart-results';
-import DirectionFOutcomeForward from './demos/supergroups/direction-f-outcome-forward';
-import DirectionGAiBridge from './demos/supergroups/direction-g-ai-bridge';
-import DirectionHUnifiedInput from './demos/supergroups/direction-h-unified-input';
+import ConnectionStatusDemo from './demos/connection-status/connection-status-demo';
+import IntegrationOverviewDemo from './demos/integration-overview/integration-overview-demo';
 
 // Initialize @rippling/ui package
 oneUiService.init({} as any);
@@ -74,15 +68,11 @@ init().then(() => {
             <Route path="/composition-manager" element={<CompositionManagerDemo />} />
             <Route path="/composition-manager/compositions/:id" element={<CompositionDetail />} />
 
-            {/* Supergroups Concept Prototypes */}
-            <Route path="/direction-a-inline-suggestion" element={<DirectionAInlineSuggestion />} />
-            <Route path="/direction-b-post-commit" element={<DirectionBPostCommit />} />
-            <Route path="/direction-c-chip-highlighting" element={<DirectionCChipHighlighting />} />
-            <Route path="/direction-d-empty-state" element={<DirectionDEmptyState />} />
-            <Route path="/direction-e-smart-results" element={<DirectionESmartResults />} />
-            <Route path="/direction-f-outcome-forward" element={<DirectionFOutcomeForward />} />
-            <Route path="/direction-g-ai-bridge" element={<DirectionGAiBridge />} />
-            <Route path="/direction-h-unified-input" element={<DirectionHUnifiedInput />} />
+            {/* Connection Status Prototype */}
+            <Route path="/connection-status" element={<ConnectionStatusDemo />} />
+
+            {/* Integration Overview Prototype */}
+            <Route path="/integration-overview" element={<IntegrationOverviewDemo />} />
 
             {/* Fallback */}
             <Route path="*" element={<Navigate to="/" replace />} />

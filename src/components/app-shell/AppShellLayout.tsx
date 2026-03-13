@@ -124,11 +124,18 @@ export const AppShellLayout: React.FC<AppShellLayoutProps> = ({
 }) => {
   const { theme, mode: currentMode } = usePebbleTheme();
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
-  const [activeTab, setActiveTab] = useState(defaultActiveTab);
+  const [internalActiveTab, setInternalActiveTab] = useState(defaultActiveTab);
   const [adminMode, setAdminMode] = useState(false);
 
+  // Support controlled mode: sync internal state when defaultActiveTab changes
+  React.useEffect(() => {
+    setInternalActiveTab(defaultActiveTab);
+  }, [defaultActiveTab]);
+
+  const activeTab = internalActiveTab;
+
   const handleTabChange = (index: number) => {
-    setActiveTab(index);
+    setInternalActiveTab(index);
     onTabChange?.(index);
   };
 
