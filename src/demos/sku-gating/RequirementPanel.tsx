@@ -278,7 +278,7 @@ const ActionRow = styled.div`
   margin-top: 16px;
 `;
 
-/* ─── Single-path content (401k, vendor, conflict) ─── */
+/* ─── Single-path content (401k, vendor plan) ─── */
 
 const SinglePathContent = styled.div`
   display: flex;
@@ -312,12 +312,6 @@ const AlertIcon = () => (
   </svg>
 );
 
-const XCircleIcon = () => (
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
-    <circle cx="12" cy="12" r="10" /><path d="m15 9-6 6" /><path d="m9 9 6 6" />
-  </svg>
-);
-
 const ChevronDown = () => (
   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <path d="m6 9 6 6 6-6" />
@@ -333,13 +327,11 @@ const InfoSmall = () => (
 /* ─── Helpers ─── */
 
 const getSeverity = (gateType: string): string => {
-  if (gateType === 'conflict') return 'error';
   if (gateType === 'vendor-plan') return 'warning';
   return 'info';
 };
 
 const getIcon = (gateType: string) => {
-  if (gateType === 'conflict') return <XCircleIcon />;
   if (gateType === 'vendor-plan') return <AlertIcon />;
   return <InfoIcon />;
 };
@@ -356,9 +348,6 @@ const getSubtitle = (listing: IntegrationListing) => {
   }
   if (listing.gateType === 'vendor-plan') {
     return 'Verify your vendor subscription before connecting';
-  }
-  if (listing.gateType === 'conflict') {
-    return `Disconnect ${listing.conflictApp} first to install ${listing.name}`;
   }
   return '';
 };
@@ -480,22 +469,6 @@ const RequirementPanel: React.FC<RequirementPanelProps> = ({ listing }) => {
               </SinglePathContent>
             )}
 
-            {/* Conflict — resolution path */}
-            {listing.gateType === 'conflict' && (
-              <SinglePathContent>
-                {requirements.map((req, i) => (
-                  <SinglePathMessage key={i}>{req.detail}</SinglePathMessage>
-                ))}
-                <ActionRow>
-                  <TileAction variant="primary" style={{ width: 'auto' }}>
-                    Disconnect {listing.conflictApp}
-                  </TileAction>
-                  <TileAction variant="secondary" style={{ width: 'auto' }}>
-                    View {listing.conflictApp}
-                  </TileAction>
-                </ActionRow>
-              </SinglePathContent>
-            )}
           </ExpandedInner>
         </ExpandedBody>
       )}

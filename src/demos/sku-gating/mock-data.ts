@@ -1,8 +1,8 @@
 /**
  * SKU Gating Demo — Mock data
  *
- * Six integrations covering every gate type from the strategy brief,
- * with data for all three solution tiers.
+ * Five integrations covering the real gate types from the strategy brief.
+ * Examples use actual integrations from the research data.
  */
 
 import { IntegrationListing, DemoScenario, PricingOption } from './types';
@@ -47,6 +47,7 @@ export const BREAKEVEN_MESSAGE = 'Connecting 4+ apps? Full IAM is better value a
 /* ─── Integration listings ─── */
 
 export const LISTINGS: IntegrationListing[] = [
+  // IAM gate — dual pricing (from brief: 4.6k reviews, Rippling's Choice)
   {
     id: 'netsuite',
     name: 'NetSuite',
@@ -85,24 +86,25 @@ export const LISTINGS: IntegrationListing[] = [
     recommendedTier: 'full-iam',
     estimatedSavings: '$4/mo per employee',
   },
+  // IAM gate — dual pricing (from brief: 569 customers with Carta installed, no IAM)
   {
-    id: 'slack',
-    name: 'Slack',
-    icon: '\uD83D\uDCAC',
-    category: 'Productivity',
-    subcategory: 'Messaging',
-    rating: 5,
-    reviewCount: '12.3k',
-    url: 'https://slack.com/',
-    description: 'Slack is a channel-based messaging platform. With Slack, people can work together more effectively, connected to the tools and services they use every day.',
+    id: 'carta',
+    name: 'Carta',
+    icon: '\uD83D\uDCCA',
+    category: 'Finance & Legal',
+    subcategory: 'Equity Management',
+    rating: 4,
+    reviewCount: '1.8k',
+    url: 'https://carta.com/',
+    description: 'Carta helps companies and investors manage equity, fund administration, and valuations in one platform.',
     gateType: 'iam',
     gateLabel: 'Rippling Identity & Access Management required',
     supportsDualPricing: true,
     capabilities: [
       'User provisioning & de-provisioning',
       'Single Sign-On (SAML)',
-      'Guest account management',
-      'Channel membership sync',
+      'Equity plan sync',
+      'Employee onboarding automation',
     ],
     requirements: [
       {
@@ -120,6 +122,43 @@ export const LISTINGS: IntegrationListing[] = [
     recommendedTier: 'third-party',
     estimatedSavings: '$6/mo per employee',
   },
+  // IAM gate — dual pricing (from brief: 362 customers with Greenhouse installed, no IAM)
+  {
+    id: 'greenhouse',
+    name: 'Greenhouse',
+    icon: '\uD83C\uDF31',
+    category: 'Human Resources',
+    subcategory: 'Recruiting',
+    rating: 4,
+    reviewCount: '3.2k',
+    url: 'https://www.greenhouse.com/',
+    description: 'Greenhouse is the hiring operating system for people-first companies. Structured hiring, from sourcing to onboarding.',
+    gateType: 'iam',
+    gateLabel: 'Rippling Identity & Access Management required',
+    supportsDualPricing: true,
+    capabilities: [
+      'User provisioning & de-provisioning',
+      'Single Sign-On (SAML)',
+      'New hire sync to Rippling',
+      'Offer letter automation',
+    ],
+    requirements: [
+      {
+        type: 'rippling-sku',
+        label: 'Identity & Access Management',
+        status: 'required',
+        detail: 'Required for user provisioning and SSO',
+        pricing: {
+          options: [THIRD_PARTY_OPTION, FULL_IAM_OPTION],
+          breakeven: '4 integrations',
+        },
+      },
+    ],
+    currentAppsInstalled: 1,
+    recommendedTier: 'third-party',
+    estimatedSavings: '$7/mo per employee',
+  },
+  // 401k gate — single path
   {
     id: 'money-intelligence',
     name: 'Money Intelligence',
@@ -147,6 +186,7 @@ export const LISTINGS: IntegrationListing[] = [
       },
     ],
   },
+  // Vendor plan gate — third-party tier requirement
   {
     id: 'bitwarden',
     name: 'Bitwarden',
@@ -175,34 +215,7 @@ export const LISTINGS: IntegrationListing[] = [
       },
     ],
   },
-  {
-    id: 'gusto',
-    name: 'Gusto',
-    icon: '\uD83D\uDCB0',
-    category: 'Human Resources',
-    subcategory: 'Payroll',
-    rating: 4,
-    reviewCount: '3.4k',
-    url: 'https://gusto.com/',
-    description: 'Gusto provides modern payroll, benefits, and HR tools designed for small businesses.',
-    gateType: 'conflict',
-    gateLabel: 'Conflicts with existing payroll integration',
-    conflictApp: 'ADP Payroll',
-    supportsDualPricing: false,
-    capabilities: [
-      'Payroll data sync',
-      'Benefits administration',
-      'Tax filing & compliance',
-    ],
-    requirements: [
-      {
-        type: 'conflict',
-        label: 'ADP Payroll must be disconnected',
-        status: 'conflict',
-        detail: 'Gusto and ADP Payroll are mutually exclusive. Disconnect ADP first.',
-      },
-    ],
-  },
+  // No gate — free to install
   {
     id: 'google-workspace',
     name: 'Google Workspace',
@@ -229,16 +242,22 @@ export const LISTINGS: IntegrationListing[] = [
 
 export const SCENARIOS: DemoScenario[] = [
   {
-    id: 'iam-dual',
+    id: 'iam-netsuite',
     label: 'IAM \u2014 dual pricing',
     description: 'Both $2 and $8 paths (NetSuite)',
     listingId: 'netsuite',
   },
   {
-    id: 'iam-dual-2',
+    id: 'iam-carta',
     label: 'IAM \u2014 dual pricing',
-    description: 'Same pattern, different app (Slack)',
-    listingId: 'slack',
+    description: 'Equity management (Carta)',
+    listingId: 'carta',
+  },
+  {
+    id: 'iam-greenhouse',
+    label: 'IAM \u2014 dual pricing',
+    description: 'Recruiting (Greenhouse)',
+    listingId: 'greenhouse',
   },
   {
     id: '401k-single',
@@ -251,12 +270,6 @@ export const SCENARIOS: DemoScenario[] = [
     label: 'Vendor plan gate',
     description: 'Third-party tier requirement (Bitwarden)',
     listingId: 'bitwarden',
-  },
-  {
-    id: 'conflict',
-    label: 'Conflicting app',
-    description: 'Blocked by existing integration (Gusto)',
-    listingId: 'gusto',
   },
   {
     id: 'no-gate',
