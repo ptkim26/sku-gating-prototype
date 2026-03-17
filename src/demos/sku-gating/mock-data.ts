@@ -47,45 +47,6 @@ export const BREAKEVEN_MESSAGE = 'Connecting 4+ apps? Full IAM is better value a
 /* ─── Integration listings ─── */
 
 export const LISTINGS: IntegrationListing[] = [
-  // IAM gate — dual pricing (from brief: 4.6k reviews, Rippling's Choice)
-  {
-    id: 'netsuite',
-    name: 'NetSuite',
-    icon: '\uD83D\uDFE6',
-    category: 'Finance & Legal',
-    subcategory: 'ERP',
-    rating: 4,
-    reviewCount: '4.6k',
-    url: 'https://www.netsuite.com/',
-    description: 'NetSuite is the leading integrated cloud business software suite, including business accounting, ERP, CRM, and ecommerce software.',
-    gateType: 'iam',
-    gateLabel: 'Rippling Identity & Access Management required',
-    supportsDualPricing: true,
-    capabilities: [
-      'Account provisioning & de-provisioning',
-      'Subsidiary, department & location sync',
-      'Payroll journal entry integration',
-      'Custom schema mapping',
-      'Role-based access control',
-      'Audit trail & compliance logging',
-    ],
-    isRipplingChoice: true,
-    requirements: [
-      {
-        type: 'rippling-sku',
-        label: 'Identity & Access Management',
-        status: 'required',
-        detail: 'Required for account provisioning and SSO',
-        pricing: {
-          options: [THIRD_PARTY_OPTION, FULL_IAM_OPTION],
-          breakeven: '4 integrations',
-        },
-      },
-    ],
-    currentAppsInstalled: 6,
-    recommendedTier: 'full-iam',
-    estimatedSavings: '$4/mo per employee',
-  },
   // IAM gate — dual pricing (from brief: 569 customers with Carta installed, no IAM)
   {
     id: 'carta',
@@ -242,12 +203,6 @@ export const LISTINGS: IntegrationListing[] = [
 
 export const SCENARIOS: DemoScenario[] = [
   {
-    id: 'iam-netsuite',
-    label: 'IAM \u2014 dual pricing',
-    description: 'Both $2 and $8 paths (NetSuite)',
-    listingId: 'netsuite',
-  },
-  {
     id: 'iam-carta',
     label: 'IAM \u2014 dual pricing',
     description: 'Equity management (Carta)',
@@ -279,4 +234,4 @@ export const SCENARIOS: DemoScenario[] = [
   },
 ];
 
-export const DEFAULT_LISTING_ID = 'netsuite';
+export const DEFAULT_LISTING_ID = 'carta';
