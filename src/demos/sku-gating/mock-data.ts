@@ -16,7 +16,6 @@ export const THIRD_PARTY_OPTION: PricingOption = {
   price: '~$2',
   priceDetail: 'PEPM / integration',
   ctaLabel: 'Add this integration',
-  recommended: true,
   features: [
     'Single app provisioning',
     'Basic SSO (SAML)',
@@ -32,6 +31,7 @@ export const FULL_IAM_OPTION: PricingOption = {
   price: '~$8\u201310',
   priceDetail: 'PEPM, all apps',
   ctaLabel: 'Add full IAM package',
+  recommended: true,
   features: [
     'Provisioning & de-provisioning',
     'Single Sign-On (SAML & OIDC)',
@@ -42,7 +42,7 @@ export const FULL_IAM_OPTION: PricingOption = {
   ],
 };
 
-export const BREAKEVEN_MESSAGE = 'Connecting 4+ apps? Full IAM is better value at that point.';
+export const BREAKEVEN_MESSAGE = 'If you use several integrations, Full Identity & Access gives you the most value.';
 
 /* ─── Integration listings ─── */
 

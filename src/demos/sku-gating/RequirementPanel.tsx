@@ -226,6 +226,24 @@ const TileFeature = styled.li`
   }
 `;
 
+const TileSecondaryLink = styled.button`
+  display: block;
+  width: 100%;
+  margin-top: 8px;
+  padding: 0;
+  border: none;
+  background: none;
+  font-size: 12px;
+  color: ${TEXT_TERTIARY};
+  text-align: center;
+  cursor: pointer;
+  transition: color 150ms ease;
+
+  &:hover {
+    color: ${TEXT_SECONDARY};
+  }
+`;
+
 const BreakevenBar = styled.div`
   display: flex;
   align-items: center;
@@ -337,11 +355,8 @@ const getIcon = (gateType: string) => {
 };
 
 const getSubtitle = (listing: IntegrationListing) => {
-  if (listing.gateType === 'iam' && listing.supportsDualPricing) {
-    return 'Two options available \u2014 from ~$2 PEPM per integration';
-  }
   if (listing.gateType === 'iam') {
-    return '~$8\u201310 PEPM \u00b7 Includes all integrations';
+    return 'Choose how you\u2019d like to add identity management';
   }
   if (listing.gateType === '401k') {
     return 'Add this package to your Rippling plan to connect';
@@ -420,6 +435,7 @@ const RequirementPanel: React.FC<RequirementPanelProps> = ({ listing }) => {
                           : 'Add full IAM package'
                         }
                       </TileAction>
+                      <TileSecondaryLink>Talk to Sales about {option.label}</TileSecondaryLink>
                     </PricingTile>
                   ))}
                 </PricingGrid>
@@ -427,11 +443,6 @@ const RequirementPanel: React.FC<RequirementPanelProps> = ({ listing }) => {
                   <InfoSmall />
                   {BREAKEVEN_MESSAGE}
                 </BreakevenBar>
-                <ActionRow>
-                  <TileAction variant="secondary" style={{ width: 'auto', marginTop: 0 }}>
-                    Talk to Sales
-                  </TileAction>
-                </ActionRow>
               </>
             )}
 
