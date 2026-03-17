@@ -15,6 +15,7 @@ import GettingStartedPage from './demos/getting-started-page';
 import DocViewerPage from './demos/doc-viewer-page';
 import ConnectionStatusDemo from './demos/connection-status/connection-status-demo';
 import IntegrationOverviewDemo from './demos/integration-overview/integration-overview-demo';
+import SkuGatingDemo from './demos/sku-gating/sku-gating-demo';
 
 // Initialize @rippling/ui package
 oneUiService.init({} as any);
@@ -73,6 +74,9 @@ init().then(() => {
 
             {/* Integration Overview Prototype */}
             <Route path="/integration-overview" element={<IntegrationOverviewDemo />} />
+
+            {/* SKU Gating Prototype */}
+            <Route path="/sku-gating" element={<SkuGatingDemo />} />
 
             {/* Fallback */}
             <Route path="*" element={<Navigate to="/" replace />} />

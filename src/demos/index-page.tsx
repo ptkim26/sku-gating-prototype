@@ -39,6 +39,14 @@ const ALL_DEMOS: DemoCard[] = [
     icon: Icon.TYPES.BENTO_BOX,
     category: 'prototype',
   },
+  // SKU Gating Prototype
+  {
+    title: 'SKU Gating',
+    description: 'Quick Win prototype: prominent requirement banner, dual-pricing gate modal (Third Party IdP vs Full IAM), and contextual Install button states. HUD switches between all 6 gate scenarios.',
+    path: '/sku-gating',
+    icon: Icon.TYPES.LOCK_OUTLINE,
+    category: 'prototype',
+  },
   // Connection Status Prototype
   {
     title: 'Connection Status',
