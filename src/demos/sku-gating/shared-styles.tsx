@@ -236,32 +236,29 @@ export const InstallArea = styled.div`
   padding-top: 4px;
 `;
 
-export const InstallButton = styled.button<{ isGated?: boolean }>`
+export const InstallButton = styled.button<{ isDisabled?: boolean }>`
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  padding: ${({ isGated }) => isGated ? '10px 20px' : '10px 28px'};
+  padding: 10px 28px;
   font-size: 14px;
   font-weight: 500;
   letter-spacing: 0.01em;
   border-radius: ${RADIUS_MD};
-  cursor: pointer;
   transition: all 150ms ease;
   white-space: nowrap;
   ${focusVisible}
 
-  ${({ isGated }) => isGated ? css`
+  ${({ isDisabled }) => isDisabled ? css`
     background: ${SURFACE};
-    color: ${TEXT_PRIMARY};
+    color: ${TEXT_TERTIARY};
     border: 1px solid ${BORDER};
-    &:hover {
-      border-color: ${BORDER_HOVER};
-      box-shadow: ${SHADOW_SM};
-    }
+    cursor: default;
   ` : css`
     background: ${ACCENT};
     color: #fff;
     border: 1px solid ${ACCENT};
+    cursor: pointer;
     &:hover {
       background: ${ACCENT_HOVER};
     }

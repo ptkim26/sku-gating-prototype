@@ -128,14 +128,16 @@ const SkuGatingDemo: React.FC = () => {
             <AppDescription>{listing.description}</AppDescription>
           </ListingInfo>
 
-          {/* Install button — only for ungated listings */}
-          {!isGated && (
-            <InstallArea>
-              <InstallButton isGated={false}>
-                Install
-              </InstallButton>
-            </InstallArea>
-          )}
+          {/* Install button — always visible, disabled when gated */}
+          <InstallArea>
+            <InstallButton
+              isDisabled={isGated}
+              disabled={isGated}
+              aria-disabled={isGated}
+            >
+              {isGated ? `Connect ${listing.name}` : 'Install'}
+            </InstallButton>
+          </InstallArea>
         </ListingHeader>
 
         {/* Expandable requirement panel */}
